@@ -2,6 +2,10 @@
     width: 70px;
 }
 
+body{
+    background-color: #F5F5F5;
+}
+
 #login *{
     font-size: 30px;
 }
@@ -17,9 +21,12 @@
     bottom:23%;
     right:0px;
     left:0px;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
 
 #login form{
+    height: 400px;
     display: flex;
     flex-direction: column;
     align-items: center;

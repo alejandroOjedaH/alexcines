@@ -2,12 +2,13 @@ var token = null;
 var cuerpo;
 var logeoPag;
 var principalPag;
+var registro;
 
 window.onload= ()=>{
     cuerpo = document.getElementsByTagName("body")[0];
     logeoPag = document.getElementById("login");
     principalPag = document.getElementById("principal");
-
+    registro = document.getElementById("registro");
 
     cargarPantallaLogin();
 }
@@ -16,6 +17,7 @@ function cargarPantallaLogin(){
     ocultar();
     cuerpo.appendChild(logeoPag);
     const logeoBut = document.getElementById("logear");
+    const regrisBut = document.getElementById("registrarboton");
 
     logeoBut.onclick = function(){
         const usuario = document.getElementById("usuario");
@@ -25,7 +27,7 @@ function cargarPantallaLogin(){
             password: clave.value
         }
 
-        fetch("http://localhost/php/practica14/api",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
+        fetch("http://localhost/alexcines/api/api",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
         .then(response => {
             if(!response.ok){
                 console.error("Error Logeo");
@@ -39,6 +41,24 @@ function cargarPantallaLogin(){
                 cargarPantallaPrincipal();
             }
         });
+    }
+    regrisBut.onclick=function(){
+        cargarPantallaRegistro();
+    }
+}
+
+function cargarPantallaRegistro(){
+    ocultar();
+    cuerpo.appendChild(registro);
+    const registrarBut = document.getElementById("registrar");
+    const volverBut = document.getElementById("volver");
+
+    volverBut.onclick = function(){
+        mostrarSesion();
+    }
+    
+    registrarBut.onclick = function(){
+        mostrarSesion();
     }
 }
 
