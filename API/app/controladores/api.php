@@ -84,6 +84,20 @@ class api extends Controlador{
         }
     }
 
+    public function validarToken(){
+        $jsonDatos =file_get_contents("php://input");
+        $json=json_decode($jsonDatos,true);
+        $jwt = $json["token"];
+        
+        $secret = JWTKEY;
+        try{
+            JWT::decode($jwt,new Key($secret,'HS256'));
+            return true;
+        }catch(Exception $e){
+            return false;
+        }
+    }
+
     public function registrar(){
         try{
             $jsonDatos =file_get_contents("php://input");

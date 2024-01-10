@@ -86,9 +86,28 @@ function cargarPantallaRegistro(){
 }
 
 function cargarPantallaPrincipal(){
-    ocultar();
-    mostrarCabecera();
-    cuerpo.appendChild(principalPag);
+    
+    let datos ={
+        jwt: token
+    }
+
+    fetch("http://localhost/alexcines/api/api/validarToken",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
+    .then(response => {
+        if(!response.ok){
+            console.error("Error Logeo");
+        }else{
+            return response.json();
+        }
+    })
+    .then(esto =>{
+        if(esto ==true){
+            ocultar();
+            mostrarCabecera();
+            cuerpo.appendChild(principalPag);
+        }else{
+            cargarPantallaLogin();
+        }
+    });
 }
 
 function mostrarCabecera(){
