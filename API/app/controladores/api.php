@@ -46,65 +46,6 @@ class api extends Controlador{
             }
         }
     }
-    public function categorias(){
-        if($_SERVER["REQUEST_METHOD"]=="GET"){
-            if($this->validarBearerToken()){
-                $datos = $this->categoriasmodelo->categorias();
-                $json=[];
-                foreach ($datos as $categoria) {
-                    array_push($json,$categoria);
-                }
-                echo json_encode($json);
-            }else{
-                header('HTTP/1.1 403 Unauthorized');
-                header('WWW-Authenticate: Basic realm="Tienda"');
-                die('Acceso denegado');
-            }
-        }else{
-            header('HTTP/1.1 400 Bad Request');
-            die('Bad Request');
-        }
-    }
-
-    public function productos($cat=null){
-        if($_SERVER["REQUEST_METHOD"]=="GET"){
-            if($this->validarBearerToken()){
-                if($cat !== null){
-                    $datos = $this->categoriasmodelo->productos($cat);
-                    $json=[];
-                    foreach ($datos['productos'] as $producto) {
-                        array_push($json,$producto);
-                    }
-                    echo json_encode($json);
-                }
-            }else{
-                header('HTTP/1.1 403 Unauthorized');
-                header('WWW-Authenticate: Basic realm="Tienda"');
-                die('Acceso denegado');
-            }
-        }else{
-            header('HTTP/1.1 400 Bad Request');
-            die('Bad Request');
-        }
-    }
-
-    public function pedidos($res){
-        if($_SERVER["REQUEST_METHOD"]=="GET"){
-            if($this->validarBearerToken()){
-                if($res !== null){
-                    $datos = $this->categoriasmodelo->devolverPedidosPorRestaurante($res);
-                    echo json_encode($datos);
-                }
-            }else{
-                header('HTTP/1.1 403 Unauthorized');
-                header('WWW-Authenticate: Basic realm="Tienda"');
-                die('Acceso denegado');
-            }
-        }else{
-            header('HTTP/1.1 400 Bad Request');
-            die('Bad Request');
-        }
-    }
 
     private function getAuthorizationHeader(){
         $headers = null;

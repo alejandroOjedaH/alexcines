@@ -8,14 +8,10 @@ class apimodelo{
     }
 
     public function validarlogin($usuario,$contrasena){
-            $this->bd->query("select correo, clave from restaurante where correo ='".$usuario."' and clave = '".$contrasena."'");
+            $this->bd->query("select nombre, clave from usuarios where nombre ='".$usuario."' and clave = '".$contrasena."'");
             foreach($this->bd->registros() as $row){
-                if(isset($row["correo"]) && isset($row["clave"])){
+                if(isset($row["nombre"]) && isset($row["clave"])){
                     session_start();
-                    $_SESSION["username"] = $row["correo"];
-                    $_SESSION["clave"] = $row["clave"];
-                    $_SESSION["logeado"] = true;
-                    $_SESSION["carrito"] = [];
                     return true;
                 }
             }
