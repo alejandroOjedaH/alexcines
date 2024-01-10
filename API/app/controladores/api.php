@@ -3,10 +3,8 @@ use \Firebase\JWT\JWT;
 use \Firebase\JWT\Key;
 
 class api extends Controlador{
-    private $categoriasmodelo;
     private $apimodelo;
     public function __construct(){
-        $this->categoriasmodelo = $this->modelo('categoriasmodelo');
         $this->apimodelo = $this->modelo('apimodelo');
     }
 
@@ -83,6 +81,24 @@ class api extends Controlador{
             return true;
         }catch(Exception $e){
             return false;
+        }
+    }
+
+    public function registrar(){
+        try{
+            $jsonDatos =file_get_contents("php://input");
+            $json=json_decode($jsonDatos,true);
+            $usuario = [];
+
+            $usuario["usuario"] = $json["usuario"];
+            $usuario["email"] = $json["email"];
+            if($json["clave"] == $json["reclave"]){
+                $usuario["clave"] = sha1($json["clave"]);
+                $this->apimodelo->registrar($usuario);
+                echo json_encode("Registro exitoso");
+            }
+        }catch(Exception $e){
+            echo json_encode($e);
         }
     }
 }

@@ -1,0 +1,12 @@
+body{
+    margin: 0;
+}
+#piedepagina{
+    position: absolute;
+    background-color: #001F3F;
+    width: 100%;
+    height: 200px;
+    margin: 0;
+    padding: 0;
+    bottom:0;
+}

@@ -45,6 +45,8 @@ function cargarPantallaLogin(){
     regrisBut.onclick=function(){
         cargarPantallaRegistro();
     }
+    
+    mostrarPie();
 }
 
 function cargarPantallaRegistro(){
@@ -58,50 +60,45 @@ function cargarPantallaRegistro(){
     }
     
     registrarBut.onclick = function(){
+        const usuario = document.getElementById("usuario");
+        const email = document.getElementById("email");
+        const clave = document.getElementById("contrasenna");
+        const reclave = document.getElementById("recontrasenna");
+
+        let datos ={
+            usuario: usuario.value,
+            email: email.value,
+            clave: clave.value,
+            reclave: reclave.value
+        }
+        fetch("http://localhost/alexcines/api/api/registrar",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
+        .then(response => {
+            if(!response.ok){
+                console.error("Error al registrarse");
+            }else{
+                return response.json();
+            }
+        });
         mostrarSesion();
     }
+
+    mostrarPie();
 }
 
 function cargarPantallaPrincipal(){
     ocultar();
     mostrarCabecera();
     cuerpo.appendChild(principalPag);
-    const lista = document.getElementById("listaCategorias");
-
-    fetch("http://localhost/php/practica14/api/categorias",{method:"GET", headers:{"Content-Type":"application/json", "Authorization": `Bearer ${token}`}})
-        .then(response => {
-            if(!response.ok){
-                console.error("Error Cargar Categorias");
-            }else{
-                return response.json();
-            }
-        })
-        .then(esto =>{
-            lista.innerHTML="";
-            esto.forEach(cosa => {
-                const elemento = document.createElement("li");
-                elemento.innerText = cosa.descripcion;
-                elemento.style.cursor = "pointer";
-                elemento.onclick = ()=>{ mostrarProducto(cosa.codCat)};
-                lista.appendChild(elemento);
-            });
-        });
 }
 
 function mostrarCabecera(){
     let cabecera = document.createElement("div");
-    let categoria =document.createElement("span");
-    let carrito =document.createElement("span");
     let sesion =document.createElement("span");
 
     cabecera.id= "cabecera";
     cuerpo.appendChild(cabecera);
-    categoria.innerText="Categorias ";
-    carrito.innerText="Ver carrito ";
     sesion.innerText="Cerrar Sesion";
 
-    categoria.onclick = ()=> {mostrarCategoria()};
-    carrito.onclick = ()=> {mostrarCarrito()};
     sesion.onclick = ()=> {mostrarSesion()};
 
     categoria.style.cursor = "pointer";
@@ -113,12 +110,11 @@ function mostrarCabecera(){
     cabecera.appendChild(sesion);
 }
 
-function mostrarCategoria(){
+function mostrarPie(){
+    let pie = document.createElement("div");
+    pie.id = "piedepagina";
 
-}
-
-function mostrarCarrito(){
-
+    cuerpo.appendChild(pie);
 }
 
 function mostrarSesion(){
