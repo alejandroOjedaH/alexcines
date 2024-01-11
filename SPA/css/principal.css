@@ -1,0 +1,7 @@
+body {
+    position: relative;
+    min-height: 100vh;
+}
+#principal{
+    height: 2000px;
+}

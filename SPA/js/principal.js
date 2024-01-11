@@ -104,6 +104,7 @@ function cargarPantallaPrincipal(){
             ocultar();
             mostrarCabecera();
             cuerpo.appendChild(principalPag);
+            mostrarPie();
         }else{
             cargarPantallaLogin();
         }
@@ -112,20 +113,24 @@ function cargarPantallaPrincipal(){
 
 function mostrarCabecera(){
     let cabecera = document.createElement("div");
+    let logo =document.createElement("img");
     let sesion =document.createElement("span");
 
     cabecera.id= "cabecera";
     cuerpo.appendChild(cabecera);
+
+    logo.src="./img/logocines.png";
+    logo.classList.add("icologo");
+    logo.id = "logo";
+    sesion.classList.add("elemento");
     sesion.innerText="Cerrar Sesion";
 
+    logo.onclick = ()=> {cargarPantallaPrincipal()};
     sesion.onclick = ()=> {mostrarSesion()};
 
-    categoria.style.cursor = "pointer";
-    carrito.style.cursor = "pointer";
     sesion.style.cursor = "pointer";
 
-    cabecera.appendChild(categoria);
-    cabecera.appendChild(carrito);
+    cabecera.appendChild(logo);
     cabecera.appendChild(sesion);
 }
 
