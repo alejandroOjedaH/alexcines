@@ -8,17 +8,18 @@ class apimodelo{
     }
 
     public function validarlogin($usuario,$contrasena){
-            $this->bd->query("select correo, clave from restaurante where correo ='".$usuario."' and clave = '".$contrasena."'");
+            $this->bd->query("select nombre, clave from usuarios where nombre ='".$usuario."' and clave = '".sha1($contrasena)."'");
             foreach($this->bd->registros() as $row){
-                if(isset($row["correo"]) && isset($row["clave"])){
+                if(isset($row["nombre"]) && isset($row["clave"])){
                     session_start();
-                    $_SESSION["username"] = $row["correo"];
-                    $_SESSION["clave"] = $row["clave"];
-                    $_SESSION["logeado"] = true;
-                    $_SESSION["carrito"] = [];
                     return true;
                 }
             }
         return false;
+    }
+
+    public function registrar($usuario){
+        $this->bd->query("insert into usuarios (nombre, mail, clave) values('".$usuario["usuario"]."', '".$usuario["email"]."', '".$usuario["clave"]."')");
+        $this->bd->execute();
     }
 }

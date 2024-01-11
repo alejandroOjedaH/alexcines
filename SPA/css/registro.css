@@ -1,12 +1,15 @@
 .icologo{
     width: 70px;
 }
+body{
+    background-color: #F5F5F5;
+}
 
-#login *{
+#registro *{
     font-size: 30px;
 }
 
-#login{
+#registro{
     background-color: #F5F5F5;
     display: flex;
     flex-direction: column;
@@ -14,28 +17,31 @@
     justify-content: center;
     position:absolute;
     top:0px;
-    bottom:23%;
+    bottom:200px;
     right:0px;
     left:0px;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
 
-#login form{
+#registro form{
+    height: 600px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
 }
-#usuario, #contrasenna{
+#usuario, #contrasenna,#recontrasenna,#email{
     width: 500px;
     height: 35px;
     text-align: center;
 }
 
 @media only screen and (max-width: 600px) {
-    #login *{
+    #registro *{
         font-size: 20px;
     }
-    #usuario, #contrasenna{
+    #usuario, #contrasenna,#recontrasenna,#email{
         width: 300px;
         height: 20px;
         text-align: center;

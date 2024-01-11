@@ -4,7 +4,7 @@
 define('DB_HOST', 'localhost'); //tu servidor de BD.
 define('DB_USUARIO', 'root');
 define('DB_PASSWORD', '');
-define('DB_NOMBRE', 'tienda'); // Tu base de datos
+define('DB_NOMBRE', 'logrocines'); // Tu base de datos
 
 
 
