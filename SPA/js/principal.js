@@ -1,18 +1,35 @@
-var token = null;
 var cuerpo;
 var logeoPag;
 var principalPag;
 var registro;
+var paginas = [];
 
 window.onload= ()=>{
     cuerpo = document.getElementsByTagName("body")[0];
     logeoPag = document.getElementById("login");
     principalPag = document.getElementById("principal");
     registro = document.getElementById("registro");
+    ocultar();
 
-    cargarPantallaLogin();
+    paginas.push(cargarPantallaLogin);
+    paginas.push(cargarPantallaRegistro);
+    paginas.push(cargarPantallaPrincipal);
+    paginas.push(cargarPerilUsuario);
+
+    if(getCookie("paginaActual") == ""){
+        setCookie("paginaActual",null,1);
+        paginas[0]();
+    }else{
+        console.log(getCookie("paginaActual"));
+        paginas[getCookie("paginaActual")]();
+    }
+    if(getCookie("token") == ""){
+        setCookie("token",null,1);
+        paginas[0]();
+    }
 }
 
+// Paginas
 function cargarPantallaLogin(){
     ocultar();
     cuerpo.appendChild(logeoPag);
@@ -37,7 +54,7 @@ function cargarPantallaLogin(){
         })
         .then(esto =>{
             if(esto.split(":")[0] === "Bearer"){
-                token = esto.split(":")[1];
+                setCookie("token",esto.split(":")[1],1);
                 cargarPantallaPrincipal();
             }
         });
@@ -47,6 +64,7 @@ function cargarPantallaLogin(){
     }
     
     mostrarPie();
+    setCookie("paginaActual",0,1);
 }
 
 function cargarPantallaRegistro(){
@@ -83,18 +101,20 @@ function cargarPantallaRegistro(){
     }
 
     mostrarPie();
+    setCookie("paginaActual",1,1);
 }
 
 function cargarPantallaPrincipal(){
     
     let datos ={
-        jwt: token
+        jwt: getCookie("token")
     }
 
     fetch("http://localhost/alexcines/api/api/validarToken",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
     .then(response => {
         if(!response.ok){
             console.error("Error Logeo");
+            cargarPantallaLogin();
         }else{
             return response.json();
         }
@@ -105,15 +125,45 @@ function cargarPantallaPrincipal(){
             mostrarCabecera();
             cuerpo.appendChild(principalPag);
             mostrarPie();
+            setCookie("paginaActual",2,1);
         }else{
             cargarPantallaLogin();
         }
     });
 }
 
+function cargarPerilUsuario(){
+    let datos ={
+        jwt: getCookie("token")
+    }
+
+    fetch("http://localhost/alexcines/api/api/validarToken",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
+    .then(response => {
+        if(!response.ok){
+            console.error("Error Logeo");
+            cargarPantallaLogin();
+        }else{
+            return response.json();
+        }
+    })
+    .then(esto =>{
+        if(esto ==true){
+            ocultar();
+            mostrarCabecera();
+            mostrarPie();
+            setCookie("paginaActual",3,1);
+        }else{
+            cargarPantallaLogin();
+        }
+    });
+}
+
+//cabecera y pie
 function mostrarCabecera(){
     let cabecera = document.createElement("div");
+    let usuario = document.createElement("div");
     let logo =document.createElement("img");
+    let perfil = document.createElement("span");
     let sesion =document.createElement("span");
 
     cabecera.id= "cabecera";
@@ -122,16 +172,22 @@ function mostrarCabecera(){
     logo.src="./img/logocines.png";
     logo.classList.add("icologo");
     logo.id = "logo";
+
+    usuario.id="usuarioheader";
+
+    perfil.classList.add("elemento");
+    perfil.innerText="Perfil";
     sesion.classList.add("elemento");
     sesion.innerText="Cerrar Sesion";
 
     logo.onclick = ()=> {cargarPantallaPrincipal()};
     sesion.onclick = ()=> {mostrarSesion()};
-
-    sesion.style.cursor = "pointer";
+    perfil.onclick = ()=> {cargarPerilUsuario()};
 
     cabecera.appendChild(logo);
-    cabecera.appendChild(sesion);
+    usuario.appendChild(perfil);
+    usuario.appendChild(sesion);
+    cabecera.appendChild(usuario);
 }
 
 function mostrarPie(){
@@ -141,8 +197,10 @@ function mostrarPie(){
     cuerpo.appendChild(pie);
 }
 
+//Otras funciones
+
 function mostrarSesion(){
-    token = null;
+    setCookie("token",null,1);
     cargarPantallaLogin();
 }
 

@@ -94,7 +94,7 @@ class api extends Controlador{
             JWT::decode($jwt,new Key($secret,'HS256'));
             echo true;
         }catch(Exception $e){
-            echo false;
+            echo 0;
         }
     }
 
