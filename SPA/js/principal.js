@@ -120,7 +120,6 @@ function cargarPerilUsuario(){
         ocultar();
         mostrarCabecera();
         getPerfil();
-        mostrarPie();
         setCookie("paginaActual",3,1);
     });
 }
@@ -142,9 +141,11 @@ function mostrarCabecera(){
 
     usuario.id="usuarioheader";
 
-    perfil.classList.add("elemento");
+    perfil.classList.add("elementoHeader");
+    perfil.classList.add("verde");
     perfil.innerText="Perfil";
-    sesion.classList.add("elemento");
+    sesion.classList.add("elementoHeader");
+    sesion.classList.add("amarillo");
     sesion.innerText="Cerrar Sesion";
 
     logo.onclick = ()=> {cargarPantallaPrincipal()};
@@ -178,7 +179,7 @@ function getPerfil(){
         }
     })
     .then(usuario =>{
-        mostrarPerfil(usuario)
+        mostrarPerfil(usuario);
     });
 }
 
@@ -232,6 +233,42 @@ function usuarioToken(){
     return usuario;
 }
 
-function mostrarPerfil(usurio){
-    
+function mostrarPerfil(usuario){
+    let main = document.createElement("div");
+    let fotoContainer = document.createElement("div");
+    let datosContainer = document.createElement("div");
+    let imagenPerfil = document.createElement("img");
+    let cambiarImagen = document.createElement("span");
+    let emailSpan = document.createElement("span");
+    let usuarioSpan = document.createElement("span");
+    let cambiarClave = document.createElement("span");
+
+    main.id="perfilUsuairo";
+    fotoContainer.id="fotoContainer";
+    datosContainer.id="datosContainer";
+    imagenPerfil.classList.add("imagenPerfil");
+    cambiarImagen.classList.add("verde");
+    cambiarImagen.classList.add("elemento");
+    cambiarImagen.innerHTML="Cambiar foto de perfil";
+    emailSpan.innerText="Email: "+usuario.mail;
+    usuarioSpan.innerText="Usuario: "+usuario.nombre;
+    cambiarClave.innerHTML="Cambiar contraseña";
+    cambiarClave.classList.add("amarillo");
+    cambiarClave.classList.add("elemento");
+
+    if(usuario.fotoPerfil === null){
+        imagenPerfil.src="./img/defaultuser.png"
+    }else{
+
+    }
+
+    fotoContainer.appendChild(imagenPerfil);
+    fotoContainer.appendChild(cambiarImagen);
+    datosContainer.appendChild(emailSpan);
+    datosContainer.appendChild(usuarioSpan);
+    datosContainer.appendChild(cambiarClave);
+    main.appendChild(fotoContainer);
+    main.appendChild(datosContainer);
+    cuerpo.appendChild(main);
+    mostrarPie();
 }

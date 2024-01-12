@@ -1,0 +1,37 @@
+#perfilUsuairo{
+    margin-top: 150px;
+    padding-bottom: 200px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 35px;
+}
+
+#fotoContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.imagenPerfil{
+    width: 65%;
+}
+
+#datosContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.elemento{
+    margin:30px;
+    padding: 10px;
+    cursor: pointer;
+    width: max-content;
+}
+
+#datosContainer span{
+    margin-bottom: 20px;
+}

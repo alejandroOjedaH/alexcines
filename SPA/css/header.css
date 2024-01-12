@@ -5,7 +5,7 @@ body{
     position: fixed;
     background-color: #001F3F;
     width: 100%;
-    height: max-content;
+    height: 100px;
     margin: 0;
     padding: 0;
     top:0;
@@ -15,11 +15,18 @@ body{
     justify-content: space-between;
 }
 
-.elemento{
+.elementoHeader{
     margin:15px;
     padding: 10px;
-    background: #FFD700;
     cursor: pointer;
+}
+
+.verde{
+    background: #2ECC71; 
+}
+
+.amarillo{
+    background: #FFD700;
 }
 
 #logo{
@@ -29,12 +36,11 @@ body{
 
 #usuarioheader{
     display: flex;
-    flex-wrap: wrap;
     flex-direction: row;
 }
 
 @media only screen and (max-width: 600px) {
     #cabecera{
-        position: absolute;
+        position: relative;
     }
 }
