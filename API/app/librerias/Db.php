@@ -66,7 +66,7 @@
         //Obtenemos registros
         public function registros(){
             $this->execute();
-            return $this->stmt;
+            return $this->stmt->fetchAll(PDO::FETCH_OBJ);
         }
 
         //Obtenemos registro

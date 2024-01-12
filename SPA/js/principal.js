@@ -20,7 +20,6 @@ window.onload= ()=>{
         setCookie("paginaActual",null,1);
         paginas[0]();
     }else{
-        console.log(getCookie("paginaActual"));
         paginas[getCookie("paginaActual")]();
     }
     if(getCookie("token") == ""){
@@ -43,7 +42,7 @@ function cargarPantallaLogin(){
             usuario: usuario.value,
             password: clave.value
         }
-
+        
         fetch("http://localhost/alexcines/api/api",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
         .then(response => {
             if(!response.ok){
@@ -105,60 +104,28 @@ function cargarPantallaRegistro(){
 }
 
 function cargarPantallaPrincipal(){
-    
-    let datos ={
-        jwt: getCookie("token")
-    }
-
-    fetch("http://localhost/alexcines/api/api/validarToken",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
-    .then(response => {
-        if(!response.ok){
-            console.error("Error Logeo");
-            cargarPantallaLogin();
-        }else{
-            return response.json();
-        }
-    })
-    .then(esto =>{
-        if(esto ==true){
-            ocultar();
-            mostrarCabecera();
-            cuerpo.appendChild(principalPag);
-            mostrarPie();
-            setCookie("paginaActual",2,1);
-        }else{
-            cargarPantallaLogin();
-        }
-    });
+    comprobarToken()
+    .then(tokenValido => {
+        ocultar();
+        mostrarCabecera();
+        cuerpo.appendChild(principalPag);
+        mostrarPie();
+        setCookie("paginaActual",2,1);
+    });   
 }
 
 function cargarPerilUsuario(){
-    let datos ={
-        jwt: getCookie("token")
-    }
-
-    fetch("http://localhost/alexcines/api/api/validarToken",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
-    .then(response => {
-        if(!response.ok){
-            console.error("Error Logeo");
-            cargarPantallaLogin();
-        }else{
-            return response.json();
-        }
-    })
-    .then(esto =>{
-        if(esto ==true){
-            ocultar();
-            mostrarCabecera();
-            mostrarPie();
-            setCookie("paginaActual",3,1);
-        }else{
-            cargarPantallaLogin();
-        }
+    comprobarToken()
+    .then(tokenValido => {
+        ocultar();
+        mostrarCabecera();
+        getPerfil();
+        mostrarPie();
+        setCookie("paginaActual",3,1);
     });
 }
 
-//cabecera y pie
+//Segmentos
 function mostrarCabecera(){
     let cabecera = document.createElement("div");
     let usuario = document.createElement("div");
@@ -197,6 +164,24 @@ function mostrarPie(){
     cuerpo.appendChild(pie);
 }
 
+function getPerfil(){
+    let datos ={
+        usuario: usuarioToken()
+    }
+    fetch("http://localhost/alexcines/api/api/devolverDatos",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
+    .then(response => {
+        if(!response.ok){
+            console.error("Error cargando usuario");
+            cargarPantallaLogin();
+        }else{
+            return response.json();
+        }
+    })
+    .then(usuario =>{
+        mostrarPerfil(usuario)
+    });
+}
+
 //Otras funciones
 
 function mostrarSesion(){
@@ -210,4 +195,43 @@ function mostrarProducto(codigo){
 
 function ocultar(){
     cuerpo.innerHTML="";
+}
+
+function comprobarToken(){
+    return new Promise((resolve, reject) => {
+        let datos ={
+            jwt: getCookie("token")
+        }
+        fetch("http://localhost/alexcines/api/api/validarToken",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
+        .then(response => {
+            if(!response.ok){
+                console.error("Error Logeo");
+                cargarPantallaLogin();
+            }else{
+                return response.json();
+            }
+        })
+        .then(esto =>{
+            if(esto ==true){
+                resolve(true);
+            }else{
+                cargarPantallaLogin();
+            }
+        });
+    });
+}
+
+function usuarioToken(){
+    const token = getCookie("token");
+    const partes = token.split('.');
+    const cuerpoCodificado = partes[1];
+    const cuerpoDecodificado = atob(cuerpoCodificado);
+    const cuerpoObjeto = JSON.parse(cuerpoDecodificado);
+    const usuario = cuerpoObjeto.sub;
+
+    return usuario;
+}
+
+function mostrarPerfil(usurio){
+    
 }

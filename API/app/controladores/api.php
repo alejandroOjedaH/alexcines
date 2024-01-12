@@ -115,4 +115,17 @@ class api extends Controlador{
             echo json_encode($e);
         }
     }
+
+    function devolverDatos(){    
+        try{
+            $jsonDatos =file_get_contents("php://input");
+            $json=json_decode($jsonDatos,true);
+            $usuario = $json["usuario"];
+            
+            $datos = $this->apimodelo->getDatosUsuario($usuario);
+            echo json_encode($datos);
+        }catch(Exception $e){
+            echo json_encode($e);
+        }
+    }
 }
