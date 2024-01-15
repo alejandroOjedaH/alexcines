@@ -128,4 +128,30 @@ class api extends Controlador{
             echo json_encode($e);
         }
     }
+
+    function agregarFotoPerfil(){    
+        try{
+            $jsonDatos =file_get_contents("php://input");
+            $json=json_decode($jsonDatos,true);
+            $usuario = $json["usuario"];
+            $archivo = $json["archivo"];
+            
+            $this->apimodelo->cambiarFoto($archivo,$usuario);
+            echo true;
+        }catch(Exception $e){
+            echo false;
+        }
+    }
+    function quitarFotoPerfil(){    
+        try{
+            $jsonDatos =file_get_contents("php://input");
+            $json=json_decode($jsonDatos,true);
+            $usuario = $json["usuario"];
+            
+            $this->apimodelo->quitarFoto($usuario);
+            echo true;
+        }catch(Exception $e){
+            echo false;
+        }
+    }
 }

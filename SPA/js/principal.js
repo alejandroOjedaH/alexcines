@@ -257,10 +257,20 @@ function mostrarPerfil(usuario){
     cambiarClave.classList.add("elemento");
 
     if(usuario.fotoPerfil === null){
-        imagenPerfil.src="./img/defaultuser.png"
+        imagenPerfil.src="./img/defaultuser.png";
     }else{
+        let descodificado= usuario.fotoPerfil;
 
+        imagenPerfil.src=descodificado;
     }
+
+    cambiarImagen.onclick = () => {
+        cargarTarjetaFotoPerfil();
+    };
+
+    cambiarClave.onclick = () => {
+        cargarTarjetaClave();
+    };
 
     fotoContainer.appendChild(imagenPerfil);
     fotoContainer.appendChild(cambiarImagen);
@@ -271,4 +281,163 @@ function mostrarPerfil(usuario){
     main.appendChild(datosContainer);
     cuerpo.appendChild(main);
     mostrarPie();
+}
+
+function cargarTarjetaFotoPerfil(){
+    let todo=document.createElement("div");
+    let bloqueo =document.createElement("div");
+    let tarjeta =document.createElement("div");
+    let selector =document.createElement("input");
+    let botonesTarjetaFotos=document.createElement("div");
+    let aceptar =document.createElement("span");
+    let volver =document.createElement("span");
+    let eliminar =document.createElement("span");
+    let archivo =null;
+
+    todo.classList.add("todoTarjeta");
+    bloqueo.classList.add("bloqueo");
+    tarjeta.classList.add("tarjeta");
+    botonesTarjetaFotos.classList.add("botonesTarjetaFotos");
+    aceptar.classList.add("elemento");
+    aceptar.classList.add("verde");
+    volver.classList.add("elemento");
+    volver.classList.add("verde");
+    eliminar.classList.add("elemento");
+    eliminar.classList.add("amarillo");
+    
+
+    selector.type="file";
+    selector.id="imagenSelector";
+    selector.accept="image/*";
+    selector.multiple="false";
+    aceptar.innerText="Aceptar";
+    volver.innerText="Volver";
+    eliminar.innerText="Eliminar";
+
+    selector.onchange =(event)=>{archivo= event.target.files[0];};
+    
+    volver.onclick=()=>{
+        todo.remove();
+    };
+    eliminar.onclick=()=>{
+        quitarFotoPerfil();
+        cargarPerilUsuario();
+    };
+    aceptar.onclick=()=>{
+        if(archivo===null){
+            todo.remove();
+        }else if(archivo){
+            let reader= new FileReader();
+            reader.onload=()=>{
+                console.log(reader.result)
+                let codificado = reader.result;
+                enviarFotoPerfil(codificado);
+                cargarPerilUsuario();
+            }
+            reader.readAsDataURL(archivo);
+        }
+    };
+
+    botonesTarjetaFotos.appendChild(aceptar);
+    botonesTarjetaFotos.appendChild(eliminar);
+    botonesTarjetaFotos.appendChild(volver);
+    tarjeta.appendChild(selector);
+    tarjeta.appendChild(botonesTarjetaFotos);
+    todo.appendChild(bloqueo);
+    todo.appendChild(tarjeta);
+    cuerpo.appendChild(todo);
+}
+
+function enviarFotoPerfil(archivo){
+    let datos ={
+        usuario: usuarioToken(),
+        archivo: archivo
+    }
+    fetch("http://localhost/alexcines/api/api/agregarFotoPerfil",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
+    .then(response => {
+        if(!response.ok){
+            console.error("Error al guardar la imagen");
+        }else{
+            return response.json();
+        }
+    });
+}
+
+function quitarFotoPerfil(){
+    let datos ={
+        usuario: usuarioToken()
+    }
+    fetch("http://localhost/alexcines/api/api/quitarFotoPerfil",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
+    .then(response => {
+        if(!response.ok){
+            console.error("Error al quitar la imagen");
+        }else{
+            return response.json();
+        }
+    });
+}
+
+function cargarTarjetaClave(){
+    let todo=document.createElement("div");
+    let bloqueo =document.createElement("div");
+    let tarjeta =document.createElement("div");
+    let selector =document.createElement("input");
+    let botonesTarjetaFotos=document.createElement("div");
+    let aceptar =document.createElement("span");
+    let volver =document.createElement("span");
+    let eliminar =document.createElement("span");
+    let archivo =null;
+
+    todo.classList.add("todoTarjeta");
+    bloqueo.classList.add("bloqueo");
+    tarjeta.classList.add("tarjeta");
+    botonesTarjetaFotos.classList.add("botonesTarjetaFotos");
+    aceptar.classList.add("elemento");
+    aceptar.classList.add("verde");
+    volver.classList.add("elemento");
+    volver.classList.add("verde");
+    eliminar.classList.add("elemento");
+    eliminar.classList.add("amarillo");
+    
+
+    selector.type="file";
+    selector.id="imagenSelector";
+    selector.accept="image/*";
+    selector.multiple="false";
+    aceptar.innerText="Aceptar";
+    volver.innerText="Volver";
+    eliminar.innerText="Eliminar";
+
+    selector.onchange =(event)=>{archivo= event.target.files[0];};
+    
+    volver.onclick=()=>{
+        todo.remove();
+    };
+    eliminar.onclick=()=>{
+        quitarFotoPerfil();
+        cargarPerilUsuario();
+    };
+    aceptar.onclick=()=>{
+        if(archivo===null){
+            todo.remove();
+        }else if(archivo){
+            let reader= new FileReader();
+            reader.onload=()=>{
+                console.log(reader.result)
+                let codificado = reader.result;
+                enviarFotoPerfil(codificado);
+                cargarPerilUsuario();
+            }
+            reader.readAsDataURL(archivo);
+        }
+    };
+
+    botonesTarjetaFotos.appendChild(aceptar);
+    botonesTarjetaFotos.appendChild(eliminar);
+    botonesTarjetaFotos.appendChild(volver);
+    tarjeta.appendChild(selector);
+    tarjeta.appendChild(botonesTarjetaFotos);
+    todo.appendChild(bloqueo);
+    todo.appendChild(tarjeta);
+    cuerpo.appendChild(todo);
 }

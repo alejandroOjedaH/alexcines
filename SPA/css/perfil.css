@@ -1,5 +1,5 @@
 #perfilUsuairo{
-    margin-top: 150px;
+    padding-top: 150px;
     padding-bottom: 200px;
     display: flex;
     flex-direction: row;
@@ -30,6 +30,7 @@
     padding: 10px;
     cursor: pointer;
     width: max-content;
+    border-radius: 10px;
 }
 
 #datosContainer span{

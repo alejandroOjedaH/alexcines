@@ -26,4 +26,14 @@ class apimodelo{
         $this->bd->query("select nombre, mail, clave, fotoPerfil from usuarios where nombre = '".$usuario."'");
         return $this->bd->registro();
     }
+
+    public function cambiarFoto($archivo,$usuario){
+        $this->bd->query("update usuarios set fotoPerfil = '".$archivo."' where nombre ='".$usuario."'");
+        return $this->bd->execute();
+    }
+
+    public function quitarFoto($usuario){
+        $this->bd->query("update usuarios set fotoPerfil = null where nombre ='".$usuario."'");
+        return $this->bd->execute();
+    }
 }
