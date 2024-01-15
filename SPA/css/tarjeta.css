@@ -18,14 +18,21 @@
 }
 
 .tarjeta{
-    height: fit-content;
-    width: fit-content;
+    height: min-content;
+    width: min-content;
     background-color: #F5F5F5;
     border-radius: 15px;
     display: flex;
     flex-direction: column;
     padding: 50px;
     z-index: 10;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.tarjeta *{
+    font-size: 30px;
 }
 
 .botonesTarjetaFotos{
@@ -33,4 +40,20 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
+}
+
+.camposTarjeta{
+    width: 350px;
+    height: 30px;
+    margin: 15px;
+}
+
+@media only screen and (max-width: 600px) {
+    .selectorFilesTarjeta{
+        font-size: 100%;
+    }
+    .tarjeta{
+        padding: 0;
+        padding-top: 10px;
+    }
 }

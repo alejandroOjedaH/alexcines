@@ -36,4 +36,14 @@ class apimodelo{
         $this->bd->query("update usuarios set fotoPerfil = null where nombre ='".$usuario."'");
         return $this->bd->execute();
     }
+
+    public function cambiarClave($usuario,$clave){
+        $this->bd->query("update usuarios set clave ='".$clave."' where nombre ='".$usuario."'");
+        return $this->bd->execute();
+    }
+
+    public function comprobarAdmin($usuario){
+        $this->bd->query("select isadmin from usuarios where nombre ='".$usuario."'");
+        return $this->bd->registro();
+    }
 }

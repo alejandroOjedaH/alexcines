@@ -15,7 +15,8 @@
 }
 
 .imagenPerfil{
-    width: 65%;
+    width: 400px;
+    border-radius: 200px;
 }
 
 #datosContainer{
@@ -35,4 +36,10 @@
 
 #datosContainer span{
     margin-bottom: 20px;
+}
+
+@media only screen and (max-width: 600px) {
+    .imagenPerfil{
+        width: 80%;
+    }
 }

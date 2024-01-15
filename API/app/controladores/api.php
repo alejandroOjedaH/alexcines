@@ -154,4 +154,37 @@ class api extends Controlador{
             echo false;
         }
     }
+
+    public function cambiarClave(){
+        try{
+            $jsonDatos =file_get_contents("php://input");
+            $json=json_decode($jsonDatos,true);
+            $usuario = $json["usuario"];
+            $claveActual = $json["claveActual"];
+            $claveNueva = sha1($json["claveNueva"]);
+            $nuevaClave = sha1($json["nuevaClave"]);
+            
+            if($claveNueva == $nuevaClave && $this->apimodelo->validarlogin($usuario,$claveActual)){
+                $this->apimodelo->cambiarClave($usuario,$claveNueva);
+                echo true;
+            }else{
+                echo "Campos erroneos";
+            }
+        }catch(Exception $e){
+            echo json_encode($e);
+        }
+    }
+
+    public function comprobarAdmin(){
+        try{
+            $jsonDatos =file_get_contents("php://input");
+            $json=json_decode($jsonDatos,true);
+            $usuario = $json["usuario"];
+            
+            $datos = $this->apimodelo->comprobarAdmin($usuario);
+            echo json_encode($datos);
+        }catch(Exception $e){
+            echo json_encode($e);
+        }
+    }
 }

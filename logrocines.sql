@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-01-2024 a las 19:41:04
+-- Tiempo de generación: 15-01-2024 a las 21:44:15
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -32,8 +32,8 @@ CREATE TABLE `usuarios` (
   `nombre` varchar(100) DEFAULT NULL,
   `mail` varchar(100) DEFAULT NULL,
   `clave` varchar(100) DEFAULT NULL,
-  `isAdmin` tinyint(1) DEFAULT NULL,
-  `fotoPerfil` varchar(255) DEFAULT NULL
+  `isAdmin` tinyint(1) DEFAULT 0,
+  `fotoPerfil` longtext DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -41,8 +41,8 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `nombre`, `mail`, `clave`, `isAdmin`, `fotoPerfil`) VALUES
-(1, 'Pepe', 'lombproyecto@gmail.com', 'd033e22ae348aeb5660fc2140aec35850c4da997', NULL, NULL),
-(3, 'Elmillor', 'elpepe', 'a16358be6e2306b153b1f071477e68837266075e', NULL, NULL),
+(1, 'Pepe', 'lombproyecto@gmail.com', 'd033e22ae348aeb5660fc2140aec35850c4da997', 0, NULL),
+(3, 'Elmillor', 'elpepe', 'a16358be6e2306b153b1f071477e68837266075e', 0, NULL),
 (4, 'aojedah01', 'aojedah01@larioja.edu.es', 'd033e22ae348aeb5660fc2140aec35850c4da997', 1, NULL);
 
 --
