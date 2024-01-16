@@ -1,0 +1,45 @@
+#perfilUsuairo{
+    padding-top: 150px;
+    padding-bottom: 200px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 35px;
+}
+
+#fotoContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.imagenPerfil{
+    width: 400px;
+    border-radius: 200px;
+}
+
+#datosContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.elemento{
+    margin:30px;
+    padding: 10px;
+    cursor: pointer;
+    width: max-content;
+    border-radius: 10px;
+}
+
+#datosContainer span{
+    margin-bottom: 20px;
+}
+
+@media only screen and (max-width: 600px) {
+    .imagenPerfil{
+        width: 80%;
+    }
+}

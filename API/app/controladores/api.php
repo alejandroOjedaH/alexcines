@@ -94,7 +94,7 @@ class api extends Controlador{
             JWT::decode($jwt,new Key($secret,'HS256'));
             echo true;
         }catch(Exception $e){
-            echo false;
+            echo 0;
         }
     }
 
@@ -111,6 +111,78 @@ class api extends Controlador{
                 $this->apimodelo->registrar($usuario);
                 echo json_encode("Registro exitoso");
             }
+        }catch(Exception $e){
+            echo json_encode($e);
+        }
+    }
+
+    function devolverDatos(){    
+        try{
+            $jsonDatos =file_get_contents("php://input");
+            $json=json_decode($jsonDatos,true);
+            $usuario = $json["usuario"];
+            
+            $datos = $this->apimodelo->getDatosUsuario($usuario);
+            echo json_encode($datos);
+        }catch(Exception $e){
+            echo json_encode($e);
+        }
+    }
+
+    function agregarFotoPerfil(){    
+        try{
+            $jsonDatos =file_get_contents("php://input");
+            $json=json_decode($jsonDatos,true);
+            $usuario = $json["usuario"];
+            $archivo = $json["archivo"];
+            
+            $this->apimodelo->cambiarFoto($archivo,$usuario);
+            echo true;
+        }catch(Exception $e){
+            echo false;
+        }
+    }
+    function quitarFotoPerfil(){    
+        try{
+            $jsonDatos =file_get_contents("php://input");
+            $json=json_decode($jsonDatos,true);
+            $usuario = $json["usuario"];
+            
+            $this->apimodelo->quitarFoto($usuario);
+            echo true;
+        }catch(Exception $e){
+            echo false;
+        }
+    }
+
+    public function cambiarClave(){
+        try{
+            $jsonDatos =file_get_contents("php://input");
+            $json=json_decode($jsonDatos,true);
+            $usuario = $json["usuario"];
+            $claveActual = $json["claveActual"];
+            $claveNueva = sha1($json["claveNueva"]);
+            $nuevaClave = sha1($json["nuevaClave"]);
+            
+            if($claveNueva == $nuevaClave && $this->apimodelo->validarlogin($usuario,$claveActual)){
+                $this->apimodelo->cambiarClave($usuario,$claveNueva);
+                echo true;
+            }else{
+                echo "Campos erroneos";
+            }
+        }catch(Exception $e){
+            echo json_encode($e);
+        }
+    }
+
+    public function comprobarAdmin(){
+        try{
+            $jsonDatos =file_get_contents("php://input");
+            $json=json_decode($jsonDatos,true);
+            $usuario = $json["usuario"];
+            
+            $datos = $this->apimodelo->comprobarAdmin($usuario);
+            echo json_encode($datos);
         }catch(Exception $e){
             echo json_encode($e);
         }
