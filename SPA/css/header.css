@@ -31,6 +31,10 @@ body{
     background: #FFD700;
 }
 
+.rojo{
+    background: #fc4545;
+}
+
 .verde:active, .amarillo:active{
     opacity: 0.2;
 }
@@ -41,7 +45,7 @@ body{
 
 
 #logo{
-    padding: 20px;
+    padding: 5px;
     cursor: pointer;
 }
 
@@ -54,5 +58,33 @@ body{
 @media only screen and (max-width: 600px) {
     #cabecera{
         position: relative;
+    }
+}
+
+#buscador{
+    border-radius: 10px;
+    width: 300px;
+    height: 35px;
+}
+
+#buscadorContainer{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    text-align: center;
+}
+
+#buscadorContainer select{
+    height: 35px;
+}
+
+#buscadorContainer span{
+    margin: 0;
+}
+
+@media only screen and (max-width: 600px) {
+    #buscador{
+        width: 100%;
     }
 }

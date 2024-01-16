@@ -26,6 +26,8 @@ window.onload= ()=>{
         setCookie("token",null,1);
         paginas[0]();
     }
+    let api=new ExternalApiService();
+    api.getPeliculas("Kung Fu Panda 2");
 }
 
 // Paginas
@@ -147,7 +149,7 @@ function mostrarCabecera(){
     perfil.classList.add("elementoHeader");
     perfil.classList.add("verde");
     perfil.innerText="Perfil";
-    admin.innerText="admin";
+    admin.innerText="Admin";
     sesion.classList.add("elementoHeader");
     sesion.classList.add("amarillo");
     sesion.innerText="Cerrar Sesion";
@@ -158,14 +160,15 @@ function mostrarCabecera(){
     admin.onclick = ()=> {cargarPantallaPrincipal()};
 
     cabecera.appendChild(logo);
+    cabecera.appendChild(mostrarBuscador());
     comprobarAdmin().then(isAdmin=>{
         if(isAdmin){
             usuario.appendChild(admin);
         }
+        usuario.appendChild(perfil);
+        usuario.appendChild(sesion);
+        cabecera.appendChild(usuario);
     });
-    usuario.appendChild(perfil);
-    usuario.appendChild(sesion);
-    cabecera.appendChild(usuario);
 }
 
 function mostrarPie(){
@@ -261,9 +264,9 @@ function mostrarTarjetaFotoPerfil(){
     aceptar.classList.add("elemento");
     aceptar.classList.add("verde");
     volver.classList.add("elemento");
-    volver.classList.add("verde");
+    volver.classList.add("amarillo");
     eliminar.classList.add("elemento");
-    eliminar.classList.add("amarillo");
+    eliminar.classList.add("rojo");
     selector.classList.add("selectorFilesTarjeta");
     
 
@@ -331,7 +334,7 @@ function mostrarTarjetaClave(){
     aceptar.classList.add("elemento");
     aceptar.classList.add("verde");
     volver.classList.add("elemento");
-    volver.classList.add("verde");
+    volver.classList.add("amarillo");
     claveActual.classList.add("camposTarjeta");
     claveNueva.classList.add("camposTarjeta");
     nuevaClave.classList.add("camposTarjeta");
@@ -367,6 +370,54 @@ function mostrarTarjetaClave(){
     todo.appendChild(bloqueo);
     todo.appendChild(tarjeta);
     cuerpo.appendChild(todo);
+}
+
+function mostrarBuscador(){
+    let buscadorContainer = document.createElement("div");
+    let tipoBusqueda=document.createElement("select");
+    let original=document.createElement("option");
+    let castellano=document.createElement("option");
+    let anno=document.createElement("option");
+    let duraccion=document.createElement("option");
+    let director=document.createElement("option");
+    let miembros=document.createElement("option");
+    let buscador=document.createElement("input");
+    let aceptar=document.createElement("span");
+
+    tipoBusqueda.name="busqueda";
+    original.value="original";
+    original.innerText="Original";
+    castellano.value="castellano";
+    castellano.innerText="Castellano";
+    anno.value="anno";
+    anno.innerText="Año";
+    duraccion.value="duraccion";
+    duraccion.innerText="Duraccion";
+    director.value="director";
+    director.innerText="Director";
+    miembros.value="miembros";
+    miembros.innerText="Miembros";
+    buscador.type="text";
+    aceptar.innerText="Buscar";
+
+    buscadorContainer.id="buscadorContainer";
+    buscador.id="buscador"
+    aceptar.classList.add("elementoHeader");
+    aceptar.classList.add("verde"); 
+
+    tipoBusqueda.appendChild(original);
+    tipoBusqueda.appendChild(castellano);
+    tipoBusqueda.appendChild(anno);
+    tipoBusqueda.appendChild(duraccion);
+    tipoBusqueda.appendChild(director);
+    tipoBusqueda.appendChild(original);
+    tipoBusqueda.appendChild(miembros);
+
+    buscadorContainer.appendChild(tipoBusqueda);
+    buscadorContainer.appendChild(buscador);
+    buscadorContainer.appendChild(aceptar);
+
+    return buscadorContainer;
 }
 
 //Otras funciones
@@ -479,7 +530,7 @@ function comprobarAdmin(){
                 return response.json();
             }
         }).then(respuesta=>{
-            if(respuesta.isAdmin){
+            if(respuesta.isadmin === 1){
                 resolve(true);
             }else{
                 resolve(false);
