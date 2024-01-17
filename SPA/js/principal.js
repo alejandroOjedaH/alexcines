@@ -732,7 +732,7 @@ function comprobarAdmin(){
                 return response.json();
             }
         }).then(respuesta=>{
-            if(respuesta.isadmin === 1){
+            if(respuesta.isadmin === "1"){
                 resolve(true);
             }else{
                 resolve(false);
