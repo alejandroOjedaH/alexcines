@@ -46,25 +46,24 @@ class ExternalApiService {
                
                 return {
                     title: Title,
-                    tit_espanol: this.movieTitlesESP[index],
-                    sinopsis: this.resumenesESP[index],
+                    titEspanol: this.movieTitlesESP,
+                    sinopsis: this.resumenesESP,
                     reparto: ActorsSplited,
                     genero: GenresSplited,
                     duracion: Runtime ? parseInt(Runtime) : null,
                     ano: Year,
                     director: Director,
-                    imagen_portada:Poster
+                    imagenPortada:Poster
                 };
             }
  
         });
-        console.log(JSON.stringify(peliculas));
  
-        return peliculas;
+        return peliculas[0];
     }
     async fetchMovies(title) {
         try {
-            const tmdbUrl = `https://api.themoviedb.org/3/search/movie?query=${title}`;
+            const tmdbUrl = `https://api.themoviedb.org/3/search/movie?query=${title}&language=es-ES`;
             const tmdbOptions = {
                 method: 'GET',
                 headers: {
@@ -86,13 +85,14 @@ class ExternalApiService {
                     return fetch(omdbUrl).then(response => response.json());
                 }
             });  
- 
             const omdbResponses = await Promise.all(omdbPromises);
             this.movies = this.movies.concat(omdbResponses);
         } catch (error) {
             console.error('Error RESPONSE:', error);
             throw error;
         }
-        return this.movies[0];
+        
+        this.movies = this.movies.filter(elemento => elemento !== undefined);
+        return this.movies;
     }
 }

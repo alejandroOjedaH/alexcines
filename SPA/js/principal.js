@@ -14,7 +14,8 @@ window.onload= ()=>{
     paginas.push(cargarPantallaLogin);
     paginas.push(cargarPantallaRegistro);
     paginas.push(cargarPantallaPrincipal);
-    paginas.push(cargarPerilUsuario);
+    paginas.push(cargarPerfilUsuario);
+    paginas.push(cargarRegistroPelicula);
 
     if(getCookie("paginaActual") == ""){
         setCookie("paginaActual",null,1);
@@ -26,8 +27,6 @@ window.onload= ()=>{
         setCookie("token",null,1);
         paginas[0]();
     }
-    let api=new ExternalApiService();
-    api.getPeliculas("Kung Fu Panda 2");
 }
 
 // Paginas
@@ -56,7 +55,15 @@ function cargarPantallaLogin(){
         .then(esto =>{
             if(esto.split(":")[0] === "Bearer"){
                 setCookie("token",esto.split(":")[1],1);
-                cargarPantallaPrincipal();
+                
+                comprobarAdmin().then(isAdmin=>{
+                    if(isAdmin){
+                        setCookie("esAdmin",true,1);
+                    }else{
+                        setCookie("esAdmin",false,1);
+                    }
+                    cargarPantallaPrincipal();
+                });
             }
         });
     }
@@ -116,13 +123,23 @@ function cargarPantallaPrincipal(){
     });   
 }
 
-function cargarPerilUsuario(){
+function cargarPerfilUsuario(){
     comprobarToken()
     .then(tokenValido => {
         ocultar();
         mostrarCabecera();
         getPerfil();
         setCookie("paginaActual",3,1);
+    });
+}
+
+function cargarRegistroPelicula(){
+    comprobarToken()
+    .then(tokenValido => {
+        ocultar();
+        mostrarCabecera();
+        mostrarRegistroPelicula();
+        setCookie("paginaActual",4,1);
     });
 }
 
@@ -156,19 +173,17 @@ function mostrarCabecera(){
 
     logo.onclick = ()=> {cargarPantallaPrincipal()};
     sesion.onclick = ()=> {mostrarSesion()};
-    perfil.onclick = ()=> {cargarPerilUsuario()};
-    admin.onclick = ()=> {cargarPantallaPrincipal()};
+    perfil.onclick = ()=> {cargarPerfilUsuario()};
+    admin.onclick = ()=> {cargarRegistroPelicula()};
 
     cabecera.appendChild(logo);
     cabecera.appendChild(mostrarBuscador());
-    comprobarAdmin().then(isAdmin=>{
-        if(isAdmin){
-            usuario.appendChild(admin);
-        }
-        usuario.appendChild(perfil);
-        usuario.appendChild(sesion);
-        cabecera.appendChild(usuario);
-    });
+    if(getCookie("esAdmin") ==="true"){
+        usuario.appendChild(admin);
+    }
+    usuario.appendChild(perfil);
+    usuario.appendChild(sesion);
+    cabecera.appendChild(usuario);
 }
 
 function mostrarPie(){
@@ -285,7 +300,7 @@ function mostrarTarjetaFotoPerfil(){
     };
     eliminar.onclick=()=>{
         quitarFotoPerfil();
-        cargarPerilUsuario();
+        cargarPerfilUsuario();
     };
     aceptar.onclick=()=>{
         if(archivo===null){
@@ -296,7 +311,7 @@ function mostrarTarjetaFotoPerfil(){
                 console.log(reader.result)
                 let codificado = reader.result;
                 enviarFotoPerfil(codificado);
-                cargarPerilUsuario();
+                cargarPerfilUsuario();
             }
             reader.readAsDataURL(archivo);
         }
@@ -381,6 +396,7 @@ function mostrarBuscador(){
     let duraccion=document.createElement("option");
     let director=document.createElement("option");
     let miembros=document.createElement("option");
+    let genero=document.createElement("option");
     let buscador=document.createElement("input");
     let aceptar=document.createElement("span");
 
@@ -397,6 +413,8 @@ function mostrarBuscador(){
     director.innerText="Director";
     miembros.value="miembros";
     miembros.innerText="Miembros";
+    genero.value="genero";
+    genero.innerText="Genero";
     buscador.type="text";
     aceptar.innerText="Buscar";
 
@@ -407,6 +425,7 @@ function mostrarBuscador(){
 
     tipoBusqueda.appendChild(original);
     tipoBusqueda.appendChild(castellano);
+    tipoBusqueda.appendChild(genero);
     tipoBusqueda.appendChild(anno);
     tipoBusqueda.appendChild(duraccion);
     tipoBusqueda.appendChild(director);
@@ -420,15 +439,198 @@ function mostrarBuscador(){
     return buscadorContainer;
 }
 
+function mostrarRegistroPelicula(){
+    let main = document.createElement("div");
+    let fotoContainer = document.createElement("div");
+    let datosContainer = document.createElement("div");
+    let botonesContainer = document.createElement("div");
+    let imagenPortada = document.createElement("img");
+    let cambiarImagen = document.createElement("span");
+    let originalTag = document.createElement("span");
+    let tituloTag = document.createElement("span");
+    let annoTag = document.createElement("span");
+    let aceptarBut = document.createElement("span");
+    let buscarBut = document.createElement("span");
+    let limpiarBut = document.createElement("span");
+    let duracionTag = document.createElement("span");
+    let directorTag = document.createElement("span");
+    let repartoTag = document.createElement("span");
+    let sinopsisTag = document.createElement("span");
+    let generosTag = document.createElement("span");
+    let original = document.createElement("input");
+    let titulo = document.createElement("input");
+    let anno = document.createElement("input");
+    let duracion = document.createElement("input");
+    let director = document.createElement("input");
+    let reparto = document.createElement("input");
+    let sinopsis = document.createElement("input");
+    let generos = document.createElement("input");
+
+    main.id="adminAgregarPelicula";
+    fotoContainer.id="fotoContainer";
+    datosContainer.id="datosContainer";
+    botonesContainer.id="botonesContainer";
+    original.classList.add("rellenar");
+    titulo.classList.add("rellenar");
+    anno.classList.add("rellenar");
+    duracion.classList.add("rellenar");
+    director.classList.add("rellenar");
+    reparto.classList.add("rellenar");
+    sinopsis.classList.add("rellenar");
+    generos.classList.add("rellenar");
+    imagenPortada.id="imagenPortada";
+    cambiarImagen.classList.add("verde");
+    cambiarImagen.classList.add("elemento");
+    cambiarImagen.innerHTML="Cambiar portada";
+    originalTag.innerText="Titulo original";
+    tituloTag.innerText="Titulo español";
+    annoTag.innerText="Año";
+    duracionTag.innerText="Duraccion";
+    directorTag.innerText="Director";
+    repartoTag.innerText="Reparto";
+    sinopsisTag.innerText="Sinopsis";
+    generosTag.innerText="Generos";
+    original.type="textarea";
+    titulo.type="textarea";
+    anno.type="number";
+    duracion.type="textarea";
+    director.type="textarea";
+    reparto.type="textarea";
+    sinopsis.type="textarea";
+    generos.type="textarea";
+    aceptarBut.classList.add("elemento");
+    aceptarBut.classList.add("verde");
+    aceptarBut.innerText="Agregar";
+    buscarBut.classList.add("elemento");
+    buscarBut.classList.add("amarillo");
+    buscarBut.innerText="Buscar";
+    limpiarBut.classList.add("elemento");
+    limpiarBut.classList.add("rojo");
+    limpiarBut.innerText="Limpiar";
+
+    cambiarImagen.onclick = () => {
+        mostrarTarjetaPortada();
+    };
+    
+    buscarBut.onclick=()=>{
+        let apiExternas=new ExternalApiService;
+        apiExternas.getPeliculas(original.value).then(datos=>{
+            original.value=datos.title;
+            titulo.value=datos.titEspanol;
+            anno.value=parseInt(datos.ano);
+            duracion.value=datos.duracion;
+            director.value=datos.director;
+            reparto.value=datos.reparto;
+            sinopsis.value=datos.sinopsis;
+            generos.value=datos.genero;
+            imagenPortada.src=datos.imagenPortada;
+        });
+    }
+
+    limpiarBut.onclick=()=>{
+        original.value="";
+        titulo.value="";
+        anno.value="";
+        duracion.value="";
+        director.value="";
+        reparto.value="";
+        sinopsis.value="";
+        generos.value="";
+        imagenPortada.src="";
+    }
+
+    fotoContainer.appendChild(imagenPortada);
+    fotoContainer.appendChild(cambiarImagen);
+    datosContainer.appendChild(originalTag);
+    datosContainer.appendChild(original);
+    datosContainer.appendChild(tituloTag);
+    datosContainer.appendChild(titulo);
+    datosContainer.appendChild(sinopsisTag);
+    datosContainer.appendChild(sinopsis);
+    datosContainer.appendChild(generosTag);
+    datosContainer.appendChild(generos);
+    datosContainer.appendChild(annoTag);
+    datosContainer.appendChild(anno);
+    datosContainer.appendChild(duracionTag);
+    datosContainer.appendChild(duracion);
+    datosContainer.appendChild(directorTag);
+    datosContainer.appendChild(director);
+    datosContainer.appendChild(repartoTag);
+    datosContainer.appendChild(reparto);
+    botonesContainer.appendChild(aceptarBut);
+    botonesContainer.appendChild(buscarBut);
+    botonesContainer.appendChild(limpiarBut);
+    main.appendChild(fotoContainer);
+    main.appendChild(datosContainer);
+    main.appendChild(botonesContainer);
+    cuerpo.appendChild(main);
+    mostrarPie();
+}
+
+function mostrarTarjetaPortada(){
+    let portada=document.getElementById("imagenPortada");
+    let todo=document.createElement("div");
+    let bloqueo =document.createElement("div");
+    let tarjeta =document.createElement("div");
+    let selector =document.createElement("input");
+    let botonesTarjetaFotos=document.createElement("div");
+    let aceptar =document.createElement("span");
+    let volver =document.createElement("span");
+    let eliminar =document.createElement("span");
+    let archivo =null;
+
+    todo.classList.add("todoTarjeta");
+    bloqueo.classList.add("bloqueo");
+    tarjeta.classList.add("tarjeta");
+    botonesTarjetaFotos.classList.add("botonesTarjetaFotos");
+    aceptar.classList.add("elemento");
+    aceptar.classList.add("verde");
+    volver.classList.add("elemento");
+    volver.classList.add("amarillo");
+    eliminar.classList.add("elemento");
+    eliminar.classList.add("rojo");
+    selector.classList.add("selectorFilesTarjeta");
+    
+
+    selector.type="file";
+    selector.id="imagenSelector";
+    selector.accept="image/*";
+    selector.multiple="false";
+    aceptar.innerText="Aceptar";
+    volver.innerText="Volver";
+    eliminar.innerText="Eliminar";
+
+    selector.onchange =(event)=>{archivo= event.target.files[0];};
+    
+    volver.onclick=()=>{
+        todo.remove();
+    };
+    eliminar.onclick=()=>{
+        portada.src="";
+        todo.remove();
+    };
+    aceptar.onclick=()=>{
+        const blob = new Blob([archivo], { type: archivo.type });
+
+        portada.src=URL.createObjectURL(blob);
+        todo.remove();
+    };
+
+    botonesTarjetaFotos.appendChild(aceptar);
+    botonesTarjetaFotos.appendChild(eliminar);
+    botonesTarjetaFotos.appendChild(volver);
+    tarjeta.appendChild(selector);
+    tarjeta.appendChild(botonesTarjetaFotos);
+    todo.appendChild(bloqueo);
+    todo.appendChild(tarjeta);
+    cuerpo.appendChild(todo);
+}
+
 //Otras funciones
 
 function mostrarSesion(){
     setCookie("token",null,1);
     cargarPantallaLogin();
-}
-
-function mostrarProducto(codigo){
-    console.log(codigo)
 }
 
 function ocultar(){

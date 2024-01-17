@@ -35,11 +35,11 @@ body{
     background: #fc4545;
 }
 
-.verde:active, .amarillo:active{
+.verde:active, .amarillo:active, .rojo:active{
     opacity: 0.2;
 }
 
-.verde:hover, .amarillo:hover{
+.verde:hover, .amarillo:hover, .rojo:hover{
     transform: scale(1.1);
 }
 
