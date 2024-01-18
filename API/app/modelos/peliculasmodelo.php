@@ -7,9 +7,15 @@ class peliculasmodelo{
         $this->bd = new Db();
     }
 
-    public function agregarPelicula($original,$titulo,$duraccion,$director,$reparto,$sinopsis,$generos,$imagen,$anno){
-        $this->bd->query("insert into peliculas (titulooriginal,titulocastellano,anno,duraccion,director,reparto,sinopsis,portada,generos)" 
-        .`values($original,$titulo,$anno,$duraccion,$director,$reparto,$sinopsis,$imagen,$generos);`);
-        return $this->bd->registro();
+    public function agregarPelicula($original,$titulo,$duracion,$director,$reparto,$sinopsis,$generos,$imagen,$anno){
+        $sql = "insert into peliculas (titulooriginal,titulocastellano,anno,duracion,director,reparto,sinopsis,portada,generos) values('$original','$titulo',$anno,$duracion,'$director','$reparto','$sinopsis','$imagen','$generos');";
+        $this->bd->query($sql);
+        return $this->bd->execute();
+    }
+
+    public function buscarPeliculas($tipo, $contenido){
+        $sql= "select * from peliculas where UPPER($tipo) like UPPER('%$contenido%');";
+        $this->bd->query($sql);
+        return $this->bd->registros();
     }
 }

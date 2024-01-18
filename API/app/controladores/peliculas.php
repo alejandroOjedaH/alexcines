@@ -3,9 +3,9 @@ use \Firebase\JWT\JWT;
 use \Firebase\JWT\Key;
 
 class peliculas extends Controlador{
-    private $apimodelo;
+    private $peliculasmodelo;
     public function __construct(){
-        $this->apimodelo = $this->modelo('apimodelo');
+        $this->peliculasmodelo = $this->modelo('peliculasmodelo');
     }
 
     public function index(){
@@ -18,7 +18,7 @@ class peliculas extends Controlador{
             $json=json_decode($jsonDatos,true);
             $original = $json["original"];
             $titulo = $json["titulo"];
-            $duraccion = $json["duraccion"];
+            $duracion = $json["duracion"];
             $anno = $json["anno"];
             $director = $json["director"];
             $reparto = $json["reparto"];
@@ -26,10 +26,24 @@ class peliculas extends Controlador{
             $generos = $json["generos"];
             $imagen = $json["imagen"];
             
-            $datos = $this->apimodelo->agregarPelicula($original,$titulo,$duraccion,$director,$reparto,$sinopsis,$generos,$imagen,$anno);
+            $this->peliculasmodelo->agregarPelicula(str_replace("'","",$original),str_replace("'","",$titulo),$duracion,$director,$reparto,str_replace("'","",$sinopsis),$generos,$imagen,intval($anno));
+            echo 1;
+        }catch(Exception $e){
+            echo 0;
+        }
+    }
+
+    public function buscarPeliculas(){
+        try{
+            $jsonDatos =file_get_contents("php://input");
+            $json=json_decode($jsonDatos,true);
+            $tipo = $json["tipo"];
+            $contenido = $json["contenido"];
+            
+            $datos = $this->peliculasmodelo->buscarPeliculas($tipo,$contenido);
             echo json_encode($datos);
         }catch(Exception $e){
-            echo json_encode($e);
+            echo 0;
         }
     }
 }

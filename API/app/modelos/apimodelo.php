@@ -46,4 +46,15 @@ class apimodelo{
         $this->bd->query("select isadmin from usuarios where nombre ='".$usuario."'");
         return $this->bd->registro();
     }
+
+    public function buscarPorNombre($tipo, $contenido){
+        $sql= "select id,nombre,mail,isAdmin,fotoPerfil from usuarios where UPPER($tipo) like UPPER('%$contenido%');";
+        $this->bd->query($sql);
+        return $this->bd->registros();
+    }
+
+    public function setToken($usuario,$token){
+        $this->bd->query("update usuarios set token ='$token' where nombre ='".$usuario."'");
+        return $this->bd->execute();
+    }
 }

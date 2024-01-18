@@ -143,6 +143,34 @@ function cargarRegistroPelicula(){
     });
 }
 
+function cargarBusquedaUsuarioPeliculas(tipo, datos){
+    comprobarToken()
+    .then(tokenValido => {
+        ocultar();
+        mostrarCabecera();
+
+        if(tipo ==="nombre"){
+            mostrarBusqueda("usuario",datos);
+        }
+        else{
+            mostrarBusqueda("peliculas",datos);
+        }
+    });
+}
+
+function cargarFichaUsuario(datos){
+    comprobarToken()
+    .then(tokenValido => {
+        ocultar();
+        mostrarCabecera();
+        if(getCookie("esAdmin") ==="true"){
+            mostrarFichaUsuario(datos);
+        }else{
+            cargarPantallaPrincipal();
+        }
+    });
+}
+
 //Segmentos
 function mostrarCabecera(){
     let cabecera = document.createElement("div");
@@ -397,24 +425,27 @@ function mostrarBuscador(){
     let director=document.createElement("option");
     let miembros=document.createElement("option");
     let genero=document.createElement("option");
+    let usuario=document.createElement("option");
     let buscador=document.createElement("input");
     let aceptar=document.createElement("span");
 
     tipoBusqueda.name="busqueda";
-    original.value="original";
+    original.value="titulooriginal";
     original.innerText="Original";
-    castellano.value="castellano";
+    castellano.value="titulocastellano";
     castellano.innerText="Castellano";
     anno.value="anno";
     anno.innerText="Año";
-    duraccion.value="duraccion";
-    duraccion.innerText="Duraccion";
+    duraccion.value="duracion";
+    duraccion.innerText="Duracion";
     director.value="director";
     director.innerText="Director";
-    miembros.value="miembros";
+    miembros.value="reparto";
     miembros.innerText="Miembros";
-    genero.value="genero";
+    genero.value="generos";
     genero.innerText="Genero";
+    usuario.value="nombre";
+    usuario.innerText="Usuario";
     buscador.type="text";
     aceptar.innerText="Buscar";
 
@@ -422,6 +453,10 @@ function mostrarBuscador(){
     buscador.id="buscador"
     aceptar.classList.add("elementoHeader");
     aceptar.classList.add("verde"); 
+
+    aceptar.onclick=()=>{buscarElementos(tipoBusqueda.value,buscador.value).then( datos=>{
+        cargarBusquedaUsuarioPeliculas(tipoBusqueda.value,datos);
+    })};
 
     tipoBusqueda.appendChild(original);
     tipoBusqueda.appendChild(castellano);
@@ -431,6 +466,9 @@ function mostrarBuscador(){
     tipoBusqueda.appendChild(director);
     tipoBusqueda.appendChild(original);
     tipoBusqueda.appendChild(miembros);
+    if(getCookie("esAdmin") ==="true"){
+        tipoBusqueda.appendChild(usuario);
+    }
 
     buscadorContainer.appendChild(tipoBusqueda);
     buscadorContainer.appendChild(buscador);
@@ -539,6 +577,8 @@ function mostrarRegistroPelicula(){
         imagenPortada.src="";
     }
 
+    aceptarBut.onclick= () =>{agregarPeliula(original.value,titulo.value,anno.value,duracion.value,director.value,reparto.value,sinopsis.value,generos.value,imagenPortada.src)};
+
     fotoContainer.appendChild(imagenPortada);
     fotoContainer.appendChild(cambiarImagen);
     datosContainer.appendChild(originalTag);
@@ -614,6 +654,359 @@ function mostrarTarjetaPortada(){
 
         portada.src=URL.createObjectURL(blob);
         todo.remove();
+    };
+
+    botonesTarjetaFotos.appendChild(aceptar);
+    botonesTarjetaFotos.appendChild(eliminar);
+    botonesTarjetaFotos.appendChild(volver);
+    tarjeta.appendChild(selector);
+    tarjeta.appendChild(botonesTarjetaFotos);
+    todo.appendChild(bloqueo);
+    todo.appendChild(tarjeta);
+    cuerpo.appendChild(todo);
+}
+
+function mostrarBusqueda(tipo,datos){
+    let main = document.createElement("div");
+
+    main.id="busquedaPrincipal";
+
+    if(tipo === "peliculas"){
+        let filaCab =document.createElement("div");
+        let nombreCabDiv =document.createElement("div");
+        let directorCabDiv =document.createElement("div");
+        let generoCabDiv =document.createElement("div");
+        let annoCabDiv =document.createElement("div");
+        let duracionCabDiv =document.createElement("div");
+        let repartoCabDiv =document.createElement("div");
+        let portadaCabDiv =document.createElement("div");
+        let nombreCab =document.createElement("span");
+        let directorCab =document.createElement("span");
+        let generoCab =document.createElement("span");
+        let annoCab =document.createElement("span");
+        let duracionCab =document.createElement("span");
+        let repartoCab =document.createElement("span");
+        let portadaCab =document.createElement("span");
+        
+        filaCab.classList.add("contenedorCabDatos");
+        nombreCabDiv.classList.add("camposDatosPelicula");
+        directorCabDiv.classList.add("camposDatosPelicula");
+        generoCabDiv.classList.add("camposDatosPelicula");
+        annoCabDiv.classList.add("camposDatosPelicula");
+        duracionCabDiv.classList.add("camposDatosPelicula");
+        repartoCabDiv.classList.add("camposDatosPelicula");
+        portadaCabDiv.classList.add("camposDatosPelicula");
+        
+
+        nombreCab.innerText="Titulo";
+        directorCab.innerText="Director";
+        generoCab.innerText="Genero";
+        annoCab.innerText="Año";
+        duracionCab.innerText="Duracion";
+        repartoCab.innerText="Reparto";
+        portadaCab.innerText="Portada";
+
+        nombreCabDiv.appendChild(nombreCab);
+        directorCabDiv.appendChild(directorCab);
+        generoCabDiv.appendChild(generoCab);
+        annoCabDiv.appendChild(annoCab);
+        duracionCabDiv.appendChild(duracionCab);
+        repartoCabDiv.appendChild(repartoCab);
+        portadaCabDiv.appendChild(portadaCab);
+        filaCab.appendChild(portadaCabDiv);
+        filaCab.appendChild(nombreCabDiv);
+        filaCab.appendChild(directorCabDiv);
+        filaCab.appendChild(generoCabDiv);
+        filaCab.appendChild(annoCabDiv);
+        filaCab.appendChild(duracionCabDiv);
+        filaCab.appendChild(repartoCabDiv);
+        main.appendChild(filaCab);
+
+        datos.forEach(dato => {
+            let fila =document.createElement("div");
+            let nombreDiv =document.createElement("div");
+            let directorDiv =document.createElement("div");
+            let generoDiv =document.createElement("div");
+            let annoDiv =document.createElement("div");
+            let duracionDiv =document.createElement("div");
+            let repartoDiv =document.createElement("div");
+            let portadaDiv =document.createElement("div");
+            let nombre =document.createElement("span");
+            let director =document.createElement("span");
+            let genero =document.createElement("span");
+            let anno =document.createElement("span");
+            let duracion =document.createElement("span");
+            let reparto =document.createElement("span");
+            let portada =document.createElement("img");
+            let escondido=document.createElement("input");
+            
+            fila.classList.add("contenedorDatos");
+            nombreDiv.classList.add("camposDatosPelicula");
+            directorDiv.classList.add("camposDatosPelicula");
+            generoDiv.classList.add("camposDatosPelicula");
+            annoDiv.classList.add("camposDatosPelicula");
+            duracionDiv.classList.add("camposDatosPelicula");
+            repartoDiv.classList.add("camposDatosPelicula");
+            portadaDiv.classList.add("camposDatosPelicula");
+
+            nombre.innerText=dato.titulocastellano;
+            director.innerText=dato.director;
+            genero.innerText=dato.generos;
+            anno.innerText=dato.anno;
+            duracion.innerText=dato.duracion;
+            reparto.innerText=dato.reparto;
+            if(dato.portada !==null){
+                portada.src= dato.portada;
+            }
+            escondido.type="hidden";
+            escondido.id="escondido";
+            escondido.value=JSON.stringify(dato);
+
+            nombreDiv.appendChild(nombre);
+            directorDiv.appendChild(director);
+            generoDiv.appendChild(genero);
+            annoDiv.appendChild(anno);
+            duracionDiv.appendChild(duracion);
+            repartoDiv.appendChild(reparto);
+            portadaDiv.appendChild(portada);
+            fila.appendChild(portadaDiv);
+            fila.appendChild(nombreDiv);
+            fila.appendChild(directorDiv);
+            fila.appendChild(generoDiv);
+            fila.appendChild(annoDiv);
+            fila.appendChild(duracionDiv);
+            fila.appendChild(repartoDiv);
+            fila.appendChild(escondido);
+            main.appendChild(fila);
+        });
+    }else if(tipo === "usuario"){
+        let filaCab =document.createElement("div");
+        let nombreCabDiv =document.createElement("div");
+        let mailCabDiv =document.createElement("div");
+        let adminCabDiv =document.createElement("div");
+        let fotoCabDiv =document.createElement("div");
+        let nombreCab =document.createElement("span");
+        let mailCab =document.createElement("span");
+        let adminCab =document.createElement("span");
+        let fotoCab =document.createElement("span");
+        
+        filaCab.classList.add("contenedorCabDatos");
+        nombreCabDiv.classList.add("camposDatosUsuario");
+        mailCabDiv.classList.add("camposDatosUsuario");
+        adminCabDiv.classList.add("camposDatosUsuario");
+        fotoCabDiv.classList.add("camposDatosUsuario");
+
+        nombreCab.innerText="Nombre";
+        mailCab.innerText="Mail";
+        adminCab.innerText="Admin";
+        fotoCab.innerText="Foto";
+
+        nombreCabDiv.appendChild(nombreCab);
+        mailCabDiv.appendChild(mailCab);
+        adminCabDiv.appendChild(adminCab);
+        fotoCabDiv.appendChild(fotoCab);
+        filaCab.appendChild(nombreCabDiv);
+        filaCab.appendChild(mailCabDiv);
+        filaCab.appendChild(adminCabDiv);
+        filaCab.appendChild(fotoCabDiv);
+        main.appendChild(filaCab);
+
+        datos.forEach(dato => {
+            let fila =document.createElement("div");
+            let nombreDiv =document.createElement("div");
+            let mailDiv =document.createElement("div");
+            let adminDiv =document.createElement("div");
+            let fotoDiv =document.createElement("div");
+            let nombre =document.createElement("span");
+            let mail =document.createElement("span");
+            let admin =document.createElement("span");
+            let foto =document.createElement("img");
+            let escondido=document.createElement("input");
+
+            fila.classList.add("contenedorDatos");
+            nombreDiv.classList.add("camposDatosUsuario");
+            mailDiv.classList.add("camposDatosUsuario");
+            adminDiv.classList.add("camposDatosUsuario");
+            fotoDiv.classList.add("camposDatosUsuario");
+
+            nombre.innerText=dato.nombre;
+            mail.innerText=dato.mail;
+            if(dato.isAdmin=== 1){
+                admin.innerText="Es admin";
+            }else{
+                admin.innerText="No es admin";
+            }
+            if(dato.fotoPerfil === null){
+                foto.src="./img/defaultuser.png";
+            }else{
+                foto.src=dato.fotoPerfil;
+            }
+            escondido.type="hidden";
+            escondido.id="escondido";
+            escondido.value=JSON.stringify(dato);
+
+            fila.onclick=()=>{cargarFichaUsuario(JSON.parse(escondido.value))};
+
+            nombreDiv.appendChild(nombre);
+            mailDiv.appendChild(mail);
+            adminDiv.appendChild(admin);
+            fotoDiv.appendChild(foto);
+            fila.appendChild(nombreDiv);
+            fila.appendChild(mailDiv);
+            fila.appendChild(adminDiv);
+            fila.appendChild(fotoDiv);
+            fila.appendChild(escondido);
+            main.appendChild(fila);
+        });
+    }
+
+    cuerpo.appendChild(main);
+    mostrarPie();
+}
+
+function mostrarFichaUsuario(datos){
+    let main = document.createElement("div");
+    let fotoContainer = document.createElement("div");
+    let datosContainer = document.createElement("div");
+    let imagenPerfil = document.createElement("img");
+    let cambiarImagen = document.createElement("span");
+    let emailSpan = document.createElement("span");
+    let usuarioSpan = document.createElement("span");
+    let adminSpan = document.createElement("span");
+    let claveSpan = document.createElement("span");
+    let email = document.createElement("input");
+    let usuario = document.createElement("input");
+    let clave = document.createElement("input");
+    let select=document.createElement("select");
+    let si=document.createElement("option");
+    let no=document.createElement("option");
+    let guardar=document.createElement("span");
+    let eliminar=document.createElement("span");
+
+
+    main.id="perfilUsuairo";
+    fotoContainer.id="fotoContainer";
+    datosContainer.id="datosContainer";
+    imagenPerfil.classList.add("imagenPerfil");
+    cambiarImagen.classList.add("verde");
+    cambiarImagen.classList.add("elemento");
+    cambiarImagen.innerHTML="Cambiar foto de perfil";
+    emailSpan.innerText="Email";
+    usuarioSpan.innerText="Usuario";
+    adminSpan.innerText="Admin";
+    claveSpan.innerText="Contraseña";
+    guardar.classList.add("amarillo");
+    guardar.classList.add("elemento");
+    eliminar.classList.add("rojo");
+    eliminar.classList.add("elemento");
+
+    email.type="text";
+    usuario.type="text";
+    clave.type="password";
+    guardar.innerText="Guardar";
+    eliminar.innerText="Eliminar";
+
+    select.name="esAdmin";
+    si.value=1;
+    no.value=0;
+    si.innerText="Si";
+    no.innerText="No";
+    select.appendChild(si);
+    select.appendChild(no);
+    if(datos.isAdmin===1){
+        si.selected=true;
+    }else{
+        no.selected=true;
+    }
+
+    email.value=datos.mail;
+    usuario.value=datos.nombre;
+
+    if(datos.fotoPerfil === null){
+        imagenPerfil.src="./img/defaultuser.png";
+    }else{
+        let descodificado= datos.fotoPerfil;
+
+        imagenPerfil.src=descodificado;
+    }
+
+    cambiarImagen.onclick = () => {
+        mostrarTarjetaFotoUsuario(imagenPerfil);
+    };
+
+
+    fotoContainer.appendChild(imagenPerfil);
+    fotoContainer.appendChild(cambiarImagen);
+    datosContainer.appendChild(emailSpan);
+    datosContainer.appendChild(email);
+    datosContainer.appendChild(usuarioSpan);
+    datosContainer.appendChild(usuario);
+    datosContainer.appendChild(adminSpan);
+    datosContainer.appendChild(select);
+    datosContainer.appendChild(claveSpan);
+    datosContainer.appendChild(clave);
+    datosContainer.appendChild(guardar);
+    datosContainer.appendChild(eliminar);
+    main.appendChild(fotoContainer);
+    main.appendChild(datosContainer);
+    cuerpo.appendChild(main);
+    mostrarPie();
+}
+
+function mostrarTarjetaFotoUsuario(imagenPerfil){
+    let todo=document.createElement("div");
+    let bloqueo =document.createElement("div");
+    let tarjeta =document.createElement("div");
+    let selector =document.createElement("input");
+    let botonesTarjetaFotos=document.createElement("div");
+    let aceptar =document.createElement("span");
+    let volver =document.createElement("span");
+    let eliminar =document.createElement("span");
+    let archivo =null;
+
+    todo.classList.add("todoTarjeta");
+    bloqueo.classList.add("bloqueo");
+    tarjeta.classList.add("tarjeta");
+    botonesTarjetaFotos.classList.add("botonesTarjetaFotos");
+    aceptar.classList.add("elemento");
+    aceptar.classList.add("verde");
+    volver.classList.add("elemento");
+    volver.classList.add("amarillo");
+    eliminar.classList.add("elemento");
+    eliminar.classList.add("rojo");
+    selector.classList.add("selectorFilesTarjeta");
+    
+
+    selector.type="file";
+    selector.id="imagenSelector";
+    selector.accept="image/*";
+    selector.multiple="false";
+    aceptar.innerText="Aceptar";
+    volver.innerText="Volver";
+    eliminar.innerText="Eliminar";
+
+    selector.onchange =(event)=>{archivo= event.target.files[0];};
+    
+    volver.onclick=()=>{
+        todo.remove();
+    };
+    eliminar.onclick=()=>{
+        imagenPerfil.src="";
+        todo.remove();
+    };
+    aceptar.onclick=()=>{
+        if(archivo===null){
+            todo.remove();
+        }else if(archivo){
+            let reader= new FileReader();
+            reader.onload=()=>{
+                console.log(reader.result)
+                let codificado = reader.result;
+                imagenPerfil.src=codificado
+                todo.remove();
+            }
+            reader.readAsDataURL(archivo);
+        }
     };
 
     botonesTarjetaFotos.appendChild(aceptar);
@@ -716,6 +1109,12 @@ function cambiarClave(claveActual, claveNueva, nuevaClave){
         }else{
             return response.json();
         }
+    }).then(respuesta =>{
+        if(respuesta === 1){
+            alert("Contraseña cambiada");
+        }else{
+            alert("Error al cambiar la contraseña");
+        }
     });
 }
 
@@ -732,11 +1131,67 @@ function comprobarAdmin(){
                 return response.json();
             }
         }).then(respuesta=>{
-            if(respuesta.isadmin === "1"){
+            if(respuesta.isadmin === 1){
                 resolve(true);
             }else{
                 resolve(false);
             }
         });
     });
+}
+
+function agregarPeliula(original,titulo,anno,duracion,director,reparto,sinopsis,generos,imagenPortada){
+    let datos ={
+        usuario: usuarioToken(),
+        original: original,
+        titulo: titulo,
+        duracion: duracion,
+        anno: anno,
+        director: director,
+        reparto: reparto,
+        sinopsis: sinopsis,
+        generos: generos,
+        imagen: imagenPortada
+    }
+    fetch("http://localhost/alexcines/api/peliculas/agregarPelicula",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
+    .then(response => {
+        if(!response.ok){
+            console.error("Error al agregar pelicula");
+        }else{
+            return response.json();
+        }
+    }).then(respuesta =>{
+        if(respuesta === 1){
+            alert("Pelicula agregada correctamente");
+        }else{
+            alert("Error al guardar pelicula");
+        }
+    });
+}
+
+function buscarElementos(tipo, contenido){
+    let datos ={
+        tipo: tipo,
+        contenido: contenido
+    }
+
+    if(tipo === "nombre"){
+        return fetch("http://localhost/alexcines/api/api/buscarPorNombre",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
+        .then(response => {
+            if(!response.ok){
+                console.error("Error al agrgar pelicula");
+            }else{
+                return response.json();
+            }
+        });
+    }else{
+        return fetch("http://localhost/alexcines/api/peliculas/buscarPeliculas",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
+        .then(response => {
+            if(!response.ok){
+                console.error("Error al buscar");
+            }else{
+                return response.json();
+            }
+        })
+    } 
 }
