@@ -171,6 +171,15 @@ function cargarFichaUsuario(datos){
     });
 }
 
+function cargarFichaPelicula(datos){
+    comprobarToken()
+    .then(tokenValido => {
+        ocultar();
+        mostrarCabecera();
+            mostrarFichaPelicula(datos);
+    });
+}
+
 //Segmentos
 function mostrarCabecera(){
     let cabecera = document.createElement("div");
@@ -738,7 +747,6 @@ function mostrarBusqueda(tipo,datos){
             let duracion =document.createElement("span");
             let reparto =document.createElement("span");
             let portada =document.createElement("img");
-            let escondido=document.createElement("input");
             
             fila.classList.add("contenedorDatos");
             nombreDiv.classList.add("camposDatosPelicula");
@@ -758,9 +766,8 @@ function mostrarBusqueda(tipo,datos){
             if(dato.portada !==null){
                 portada.src= dato.portada;
             }
-            escondido.type="hidden";
-            escondido.id="escondido";
-            escondido.value=JSON.stringify(dato);
+
+            fila.onclick=()=>{cargarFichaPelicula(dato)};
 
             nombreDiv.appendChild(nombre);
             directorDiv.appendChild(director);
@@ -776,7 +783,6 @@ function mostrarBusqueda(tipo,datos){
             fila.appendChild(annoDiv);
             fila.appendChild(duracionDiv);
             fila.appendChild(repartoDiv);
-            fila.appendChild(escondido);
             main.appendChild(fila);
         });
     }else if(tipo === "usuario"){
@@ -821,7 +827,6 @@ function mostrarBusqueda(tipo,datos){
             let mail =document.createElement("span");
             let admin =document.createElement("span");
             let foto =document.createElement("img");
-            let escondido=document.createElement("input");
 
             fila.classList.add("contenedorDatos");
             nombreDiv.classList.add("camposDatosUsuario");
@@ -841,11 +846,8 @@ function mostrarBusqueda(tipo,datos){
             }else{
                 foto.src=dato.fotoPerfil;
             }
-            escondido.type="hidden";
-            escondido.id="escondido";
-            escondido.value=JSON.stringify(dato);
 
-            fila.onclick=()=>{cargarFichaUsuario(JSON.parse(escondido.value))};
+            fila.onclick=()=>{cargarFichaUsuario(dato)};
 
             nombreDiv.appendChild(nombre);
             mailDiv.appendChild(mail);
@@ -855,7 +857,6 @@ function mostrarBusqueda(tipo,datos){
             fila.appendChild(mailDiv);
             fila.appendChild(adminDiv);
             fila.appendChild(fotoDiv);
-            fila.appendChild(escondido);
             main.appendChild(fila);
         });
     }
@@ -913,7 +914,7 @@ function mostrarFichaUsuario(datos){
     no.innerText="No";
     select.appendChild(si);
     select.appendChild(no);
-    if(datos.isAdmin===1){
+    if(datos.isAdmin*1===1){
         si.selected=true;
     }else{
         no.selected=true;
@@ -934,6 +935,10 @@ function mostrarFichaUsuario(datos){
         mostrarTarjetaFotoUsuario(imagenPerfil);
     };
 
+    eliminar.onclick=()=>{eliminarUsuario(datos.id)}
+    guardar.onclick=()=>{
+        actualizarUsuario(datos.id,email.value, usuario.value, select.value, clave.value,imagenPerfil.src);
+    }
 
     fotoContainer.appendChild(imagenPerfil);
     fotoContainer.appendChild(cambiarImagen);
@@ -1003,6 +1008,186 @@ function mostrarTarjetaFotoUsuario(imagenPerfil){
                 console.log(reader.result)
                 let codificado = reader.result;
                 imagenPerfil.src=codificado
+                todo.remove();
+            }
+            reader.readAsDataURL(archivo);
+        }
+    };
+
+    botonesTarjetaFotos.appendChild(aceptar);
+    botonesTarjetaFotos.appendChild(eliminar);
+    botonesTarjetaFotos.appendChild(volver);
+    tarjeta.appendChild(selector);
+    tarjeta.appendChild(botonesTarjetaFotos);
+    todo.appendChild(bloqueo);
+    todo.appendChild(tarjeta);
+    cuerpo.appendChild(todo);
+}
+
+function mostrarFichaPelicula(datos){
+    if(getCookie("esAdmin")){
+        let main = document.createElement("div");
+        let fotoContainer = document.createElement("div");
+        let datosContainer = document.createElement("div");
+        let botonesContainer = document.createElement("div");
+        let imagenDatosContainer = document.createElement("div");
+        let imagenPortada = document.createElement("img");
+        let cambiarImagen = document.createElement("span");
+        let originalTag = document.createElement("span");
+        let tituloTag = document.createElement("span");
+        let annoTag = document.createElement("span");
+        let guardarBut = document.createElement("span");
+        let eliminarBut = document.createElement("span");
+        let duracionTag = document.createElement("span");
+        let directorTag = document.createElement("span");
+        let repartoTag = document.createElement("span");
+        let sinopsisTag = document.createElement("span");
+        let generosTag = document.createElement("span");
+        let original = document.createElement("input");
+        let titulo = document.createElement("input");
+        let anno = document.createElement("input");
+        let duracion = document.createElement("input");
+        let director = document.createElement("input");
+        let reparto = document.createElement("input");
+        let sinopsis = document.createElement("input");
+        let generos = document.createElement("input");
+
+        main.id="fichaPeliculamain";
+        fotoContainer.id="fotoContainer";
+        datosContainer.id="datosContainerFicha";
+        botonesContainer.id="botonesContainer";
+        imagenDatosContainer.id="imagenesDatosFicha";
+        original.classList.add("rellenar");
+        titulo.classList.add("rellenar");
+        anno.classList.add("rellenar");
+        duracion.classList.add("rellenar");
+        director.classList.add("rellenar");
+        reparto.classList.add("rellenar");
+        sinopsis.classList.add("rellenar");
+        generos.classList.add("rellenar");
+        imagenPortada.id="imagenPortada";
+        cambiarImagen.classList.add("verde");
+        cambiarImagen.classList.add("elemento");
+        cambiarImagen.innerHTML="Cambiar portada";
+        originalTag.innerText="Titulo original";
+        tituloTag.innerText="Titulo español";
+        annoTag.innerText="Año";
+        duracionTag.innerText="Duraccion";
+        directorTag.innerText="Director";
+        repartoTag.innerText="Reparto";
+        sinopsisTag.innerText="Sinopsis";
+        generosTag.innerText="Generos";
+        original.type="textarea";
+        titulo.type="textarea";
+        anno.type="number";
+        duracion.type="textarea";
+        director.type="textarea";
+        reparto.type="textarea";
+        sinopsis.type="textarea";
+        generos.type="textarea";
+        guardarBut.classList.add("elemento");
+        guardarBut.classList.add("amarillo");
+        guardarBut.innerText="Guardar";
+        eliminarBut.classList.add("elemento");
+        eliminarBut.classList.add("rojo");
+        eliminarBut.innerText="Eliminar";
+
+        original.value=datos.titulooriginal;
+        titulo.value=datos.titulocastellano;
+        sinopsis.value=datos.sinopsis;
+        generos.value=datos.generos;
+        anno.value=datos.anno;
+        duracion.value=datos.duracion;
+        director.value=datos.director;
+        reparto.value=datos.reparto;
+        imagenPortada.src=datos.portada;
+
+        cambiarImagen.onclick = () => {
+            mostrarTarjetaPortadaFicha(imagenPortada);
+        };
+        
+        guardarBut.onclick=()=>{
+            
+            
+        }
+
+        eliminarBut.onclick=()=>{
+           delelePelicula(datos.id); 
+        }
+
+        fotoContainer.appendChild(imagenPortada);
+        fotoContainer.appendChild(cambiarImagen);
+        agreagarDivEnDiv(datosContainer,originalTag,original);
+        agreagarDivEnDiv(datosContainer,tituloTag,titulo);
+        agreagarDivEnDiv(datosContainer,sinopsisTag,sinopsis);
+        agreagarDivEnDiv(datosContainer,generosTag,generos);
+        agreagarDivEnDiv(datosContainer,annoTag,anno);
+        agreagarDivEnDiv(datosContainer,duracionTag,duracion);
+        agreagarDivEnDiv(datosContainer,directorTag,director);
+        agreagarDivEnDiv(datosContainer,repartoTag,reparto);
+        botonesContainer.appendChild(guardarBut);
+        botonesContainer.appendChild(eliminarBut);
+        imagenDatosContainer.appendChild(fotoContainer);
+        imagenDatosContainer.appendChild(datosContainer);
+        main.appendChild(botonesContainer);
+        main.appendChild(imagenDatosContainer);
+        cuerpo.appendChild(main);
+    }else{
+
+    }
+    mostrarPie();
+}
+
+function mostrarTarjetaPortadaFicha(portada){
+    let todo=document.createElement("div");
+    let bloqueo =document.createElement("div");
+    let tarjeta =document.createElement("div");
+    let selector =document.createElement("input");
+    let botonesTarjetaFotos=document.createElement("div");
+    let aceptar =document.createElement("span");
+    let volver =document.createElement("span");
+    let eliminar =document.createElement("span");
+    let archivo =null;
+
+    todo.classList.add("todoTarjeta");
+    bloqueo.classList.add("bloqueo");
+    tarjeta.classList.add("tarjeta");
+    botonesTarjetaFotos.classList.add("botonesTarjetaFotos");
+    aceptar.classList.add("elemento");
+    aceptar.classList.add("verde");
+    volver.classList.add("elemento");
+    volver.classList.add("amarillo");
+    eliminar.classList.add("elemento");
+    eliminar.classList.add("rojo");
+    selector.classList.add("selectorFilesTarjeta");
+    
+
+    selector.type="file";
+    selector.id="imagenSelector";
+    selector.accept="image/*";
+    selector.multiple="false";
+    aceptar.innerText="Aceptar";
+    volver.innerText="Volver";
+    eliminar.innerText="Eliminar";
+
+    selector.onchange =(event)=>{archivo= event.target.files[0];};
+    
+    volver.onclick=()=>{
+        todo.remove();
+    };
+    eliminar.onclick=()=>{
+        portada.src="";
+        todo.remove();
+    };
+    aceptar.onclick=()=>{
+        if(archivo===null){
+            todo.remove();
+        }else if(archivo){
+            let reader= new FileReader();
+            reader.onload=()=>{
+                console.log(reader.result)
+                let codificado = reader.result;
+                portada.src=codificado
                 todo.remove();
             }
             reader.readAsDataURL(archivo);
@@ -1131,7 +1316,7 @@ function comprobarAdmin(){
                 return response.json();
             }
         }).then(respuesta=>{
-            if(respuesta.isadmin === 1){
+            if(respuesta.isadmin*1 === 1){
                 resolve(true);
             }else{
                 resolve(false);
@@ -1194,4 +1379,79 @@ function buscarElementos(tipo, contenido){
             }
         })
     } 
+}
+
+function eliminarUsuario(id){
+    let datos ={
+        id: id,
+    }
+    fetch("http://localhost/alexcines/api/api/deleteUser",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
+    .then(response => {
+        if(!response.ok){
+            console.error("Error al borrar usuario");
+        }else{
+            return response.json();
+        }
+    }).then(respuesta =>{
+        if(respuesta === 1){
+            cargarPantallaPrincipal();
+            alert("Usuario eliminado correctamente");
+        }else{
+            alert("Error al eliminar usuario");
+        }
+    });
+}
+
+function actualizarUsuario(id,mail,nombre,admin,clave,imagen){
+    let datos ={
+        id: id,
+        mail: mail,
+        nombre: nombre,
+        admin: admin,
+        clave: clave,
+        imagen: imagen
+    }
+    fetch("http://localhost/alexcines/api/api/updateUser",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
+    .then(response => {
+        if(!response.ok){
+            console.error("Error al actualizar usuario");
+        }else{
+            return response.json();
+        }
+    }).then(respuesta =>{
+        if(respuesta===1){
+            alert("Usuario actualizado correctamente");
+        }else{
+            alert("Error al actualizado usuario");
+        }
+    });
+}
+
+function agreagarDivEnDiv(div,...args){
+    let nuevo=document.createElement("div");
+    Array.from(args).forEach(argumento => {
+        nuevo.appendChild(argumento);
+    });
+    div.appendChild(nuevo);
+}
+
+function delelePelicula(id){
+    let datos ={
+        id: id
+    }
+    fetch("http://localhost/alexcines/api/peliculas/deletepelicula",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
+    .then(response => {
+        if(!response.ok){
+            console.error("Error al eliminar pelicula");
+        }else{
+            return response.json();
+        }
+    }).then(respuesta =>{
+        if(respuesta===1){
+            cargarPantallaPrincipal();
+            alert("Pelicula eliminada correctamente");
+        }else{
+            alert("Error al eliminar pelicula");
+        }
+    });
 }

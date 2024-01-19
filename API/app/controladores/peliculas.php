@@ -46,4 +46,17 @@ class peliculas extends Controlador{
             echo 0;
         }
     }
+
+    public function deletePelicula(){
+        try{
+            $jsonDatos =file_get_contents("php://input");
+            $json=json_decode($jsonDatos,true);
+            $id = $json["id"];
+            
+            $this->peliculasmodelo->deletePelicula($id);
+            echo 1;
+        }catch(Exception $e){
+            echo 0;
+        }
+    }
 }

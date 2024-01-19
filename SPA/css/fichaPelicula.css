@@ -1,0 +1,30 @@
+#fichaPeliculamain{
+    padding-top: 150px;
+    padding-bottom: 200px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    font-size: 35px;
+}
+
+#datosContainerFicha{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 70%;
+}
+
+#datosContainerFicha span{
+    margin: 15px;
+    text-align: start;
+}
+
+#imagenesDatosFicha{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}

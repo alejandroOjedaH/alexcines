@@ -201,4 +201,35 @@ class api extends Controlador{
             echo 0;
         }
     }
+
+    public function deleteUser(){
+        try{
+            $jsonDatos =file_get_contents("php://input");
+            $json=json_decode($jsonDatos,true);
+            $id = $json["id"];
+            
+            $this->apimodelo->deleteUser(intval($id));
+            echo 1;
+        }catch(Exception $e){
+            echo 0;
+        }
+    }
+
+    public function updateUser(){
+        try{
+            $jsonDatos =file_get_contents("php://input");
+            $json=json_decode($jsonDatos,true);
+            $id = $json["id"];
+            $mail =$json["mail"];
+            $nombre = $json["nombre"];
+            $admin = $json["admin"];
+            $clave = $json["clave"];
+            $imagen = $json["imagen"];
+            
+            $this->apimodelo->updateUser(intval($id),$mail,$nombre,intval($admin),$clave,$imagen);
+            echo 1;
+        }catch(Exception $e){
+            echo 0;
+        }
+    }
 }

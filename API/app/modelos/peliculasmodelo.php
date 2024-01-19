@@ -18,4 +18,10 @@ class peliculasmodelo{
         $this->bd->query($sql);
         return $this->bd->registros();
     }
+
+    public function deletePelicula($id){
+        $sql = "delete from peliculas where id = $id;";
+        $this->bd->query($sql);
+        return $this->bd->execute();
+    }
 }
