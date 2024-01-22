@@ -75,4 +75,10 @@ class apimodelo{
         $this->bd->query($query);
         return $this->bd->execute();
     }
+
+    public function getUsuarioId($nombre){
+        $query="select id from usuarios where nombre='$nombre';";
+        $this->bd->query($query);
+        return $this->bd->registro();
+    }
 }

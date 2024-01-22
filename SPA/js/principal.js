@@ -517,14 +517,6 @@ function mostrarRegistroPelicula(){
     fotoContainer.id="fotoContainer";
     datosContainer.id="datosContainer";
     botonesContainer.id="botonesContainer";
-    original.classList.add("rellenar");
-    titulo.classList.add("rellenar");
-    anno.classList.add("rellenar");
-    duracion.classList.add("rellenar");
-    director.classList.add("rellenar");
-    reparto.classList.add("rellenar");
-    sinopsis.classList.add("rellenar");
-    generos.classList.add("rellenar");
     imagenPortada.id="imagenPortada";
     cambiarImagen.classList.add("verde");
     cambiarImagen.classList.add("elemento");
@@ -1025,12 +1017,78 @@ function mostrarTarjetaFotoUsuario(imagenPerfil){
 }
 
 function mostrarFichaPelicula(datos){
-    if(getCookie("esAdmin")){
+    let imagenDatosContainer=null;
+    let puntuacionContainer = document.createElement("div");
+    let valorarCab =document.createElement("span");
+    let puntuacionSlider = document.createElement("input");
+    let puntuacionUsuario =document.createElement("span");
+    let puntuacionMediaCab =document.createElement("span");
+    let puntuacionMedia =document.createElement("span");
+    let eliminarPuntuacion =document.createElement("span");
+
+    puntuacionContainer.id="puntuacionContainerFicha";
+    eliminarPuntuacion.classList.add("elemento");
+    eliminarPuntuacion.classList.add("rojo");
+
+    puntuacionSlider.type="range";
+    puntuacionSlider.min="1";
+    puntuacionSlider.max="10";
+    puntuacionMediaCab.innerText="Puntuación media";
+    valorarCab.innerText="Valorar";
+    eliminarPuntuacion.innerText="Eliminar valoración";
+    getPuntuacion(datos.id).then( respuesta=>{
+        if(respuesta.puntuacion!==undefined){
+            puntuacionUsuario.innerText=respuesta.puntuacion;
+            puntuacionSlider.value=parseInt(respuesta.puntuacion);
+        }else{
+            puntuacionUsuario.innerText="No has puntuado esta pelicula todavía";
+        }
+    });
+    getPuntuacionMedia(datos.id).then(respuesta=>{
+        if (respuesta.media!==undefined){
+            puntuacionMedia.innerText=respuesta.media;
+        }else{
+            puntuacionMedia.innerHTML="No se ha puntuado todavía";
+        }
+    });
+
+    puntuacionSlider.oninput=(evento)=>{
+        puntuacionUsuario.innerText=evento.target.value;
+    };
+    puntuacionSlider.onmouseup=(evento)=>{
+        insertarPuntuacion(datos.id,evento.target.value).then(algo=>{
+                getPuntuacionMedia(datos.id).then(respuesta=>{
+                puntuacionMedia.innerText=respuesta.media;
+            });
+        });
+    };
+    
+    eliminarPuntuacion.onclick=()=>{
+        deletePuntuacion(datos.id).then(nada =>{
+            getPuntuacionMedia(datos.id).then(respuesta=>{
+                if (respuesta.media!==undefined){
+                    puntuacionMedia.innerText=respuesta.media;
+                }else{
+                    puntuacionMedia.innerHTML="No se ha puntuado todavía";
+                }
+            });
+            getPuntuacion(datos.id).then( respuesta=>{
+                if(respuesta.puntuacion!==undefined){
+                    puntuacionUsuario.innerText=respuesta.puntuacion;
+                    puntuacionSlider.value=parseInt(respuesta.puntuacion);
+                }else{
+                    puntuacionUsuario.innerText="No has puntuado esta pelicula todavía";
+                }
+            });
+        });
+    }
+
+    if(getCookie("esAdmin")==="true"){
         let main = document.createElement("div");
         let fotoContainer = document.createElement("div");
         let datosContainer = document.createElement("div");
         let botonesContainer = document.createElement("div");
-        let imagenDatosContainer = document.createElement("div");
+        imagenDatosContainer = document.createElement("div");
         let imagenPortada = document.createElement("img");
         let cambiarImagen = document.createElement("span");
         let originalTag = document.createElement("span");
@@ -1057,14 +1115,6 @@ function mostrarFichaPelicula(datos){
         datosContainer.id="datosContainerFicha";
         botonesContainer.id="botonesContainer";
         imagenDatosContainer.id="imagenesDatosFicha";
-        original.classList.add("rellenar");
-        titulo.classList.add("rellenar");
-        anno.classList.add("rellenar");
-        duracion.classList.add("rellenar");
-        director.classList.add("rellenar");
-        reparto.classList.add("rellenar");
-        sinopsis.classList.add("rellenar");
-        generos.classList.add("rellenar");
         imagenPortada.id="imagenPortada";
         cambiarImagen.classList.add("verde");
         cambiarImagen.classList.add("elemento");
@@ -1080,7 +1130,7 @@ function mostrarFichaPelicula(datos){
         original.type="textarea";
         titulo.type="textarea";
         anno.type="number";
-        duracion.type="textarea";
+        duracion.type="number";
         director.type="textarea";
         reparto.type="textarea";
         sinopsis.type="textarea";
@@ -1107,8 +1157,7 @@ function mostrarFichaPelicula(datos){
         };
         
         guardarBut.onclick=()=>{
-            
-            
+            updatePelicula(datos.id,original.value,titulo.value,anno.value,duracion.value,director.value,reparto.value,sinopsis.value,imagenPortada.src,generos.value);
         }
 
         eliminarBut.onclick=()=>{
@@ -1133,8 +1182,76 @@ function mostrarFichaPelicula(datos){
         main.appendChild(imagenDatosContainer);
         cuerpo.appendChild(main);
     }else{
+        let main = document.createElement("div");
+        let fotoContainer = document.createElement("div");
+        let datosContainer = document.createElement("div");
+        imagenDatosContainer = document.createElement("div");
+        let imagenPortada = document.createElement("img");
+        let originalTag = document.createElement("h1");
+        let tituloTag = document.createElement("h1");
+        let annoTag = document.createElement("h1");
+        let duracionTag = document.createElement("h1");
+        let directorTag = document.createElement("h1");
+        let repartoTag = document.createElement("h1");
+        let sinopsisTag = document.createElement("h1");
+        let generosTag = document.createElement("h1");
+        let original = document.createElement("span");
+        let titulo = document.createElement("span");
+        let anno = document.createElement("span");
+        let duracion = document.createElement("span");
+        let director = document.createElement("span");
+        let reparto = document.createElement("span");
+        let sinopsis = document.createElement("span");
+        let generos = document.createElement("span");
 
+        main.id="fichaPeliculamain";
+        fotoContainer.id="fotoContainer";
+        datosContainer.id="datosContainerFicha";
+        datosContainer.classList.add("mostrarUsuarioFichaPelicula");
+        imagenDatosContainer.id="imagenesDatosFicha";
+        imagenPortada.id="imagenPortada";
+        originalTag.innerText="Titulo original";
+        tituloTag.innerText="Titulo español";
+        annoTag.innerText="Año";
+        duracionTag.innerText="Duraccion";
+        directorTag.innerText="Director";
+        repartoTag.innerText="Reparto";
+        sinopsisTag.innerText="Sinopsis";
+        generosTag.innerText="Generos";
+
+        original.innerText=datos.titulooriginal;
+        titulo.innerText=datos.titulocastellano;
+        sinopsis.innerText=datos.sinopsis;
+        generos.innerText=datos.generos;
+        anno.innerText=datos.anno;
+        duracion.innerText=datos.duracion;
+        director.innerText=datos.director;
+        reparto.innerText=datos.reparto;
+        imagenPortada.src=datos.portada;
+
+        fotoContainer.appendChild(imagenPortada);
+        agreagarDivEnDiv(datosContainer,originalTag,original);
+        agreagarDivEnDiv(datosContainer,tituloTag,titulo);
+        agreagarDivEnDiv(datosContainer,sinopsisTag,sinopsis);
+        agreagarDivEnDiv(datosContainer,generosTag,generos);
+        agreagarDivEnDiv(datosContainer,annoTag,anno);
+        agreagarDivEnDiv(datosContainer,duracionTag,duracion);
+        agreagarDivEnDiv(datosContainer,directorTag,director);
+        agreagarDivEnDiv(datosContainer,repartoTag,reparto);
+        imagenDatosContainer.appendChild(fotoContainer);
+        imagenDatosContainer.appendChild(datosContainer);
+        main.appendChild(imagenDatosContainer);
+        cuerpo.appendChild(main); 
     }
+
+    puntuacionContainer.appendChild(valorarCab);
+    puntuacionContainer.appendChild(puntuacionSlider);
+    puntuacionContainer.appendChild(puntuacionUsuario);
+    puntuacionContainer.appendChild(eliminarPuntuacion);
+    puntuacionContainer.appendChild(puntuacionMediaCab);
+    puntuacionContainer.appendChild(puntuacionMedia);
+    imagenDatosContainer.appendChild(puntuacionContainer);
+
     mostrarPie();
 }
 
@@ -1377,7 +1494,7 @@ function buscarElementos(tipo, contenido){
             }else{
                 return response.json();
             }
-        })
+        });
     } 
 }
 
@@ -1452,6 +1569,107 @@ function delelePelicula(id){
             alert("Pelicula eliminada correctamente");
         }else{
             alert("Error al eliminar pelicula");
+        }
+    });
+}
+
+function updatePelicula(id,original,castellano,anno,duracion,director,reparto,sinopsis,portada,generos){
+    let datos ={
+        id: id,
+        original: original,
+        castellano: castellano,
+        anno: anno,
+        duracion: duracion,
+        director: director,
+        reparto: reparto,
+        sinopsis: sinopsis,
+        portada: portada,
+        generos: generos
+    }
+    fetch("http://localhost/alexcines/api/peliculas/updatepelicula",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
+    .then(response => {
+        if(!response.ok){
+            console.error("Error al actualizar pelicula");
+        }else{
+            return response.json();
+        }
+    }).then(respuesta =>{
+        if(respuesta===1){
+            alert("Pelicula actualizada correctamente");
+        }else{
+            alert("Error al actualizar pelicula");
+        }
+    });
+}
+
+function insertarPuntuacion(id,puntuacion){
+    let datos ={
+        id: id,
+        usuario: usuarioToken(),
+        puntuacion: puntuacion
+    }
+    return fetch("http://localhost/alexcines/api/puntuacion/insertPuntuacion",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
+    .then(response => {
+        if(!response.ok){
+            console.error("Error al insertar puntuacion");
+        }else{
+            return response.json();
+        }
+    }).then(respuesta =>{
+        if(respuesta===1){
+            alert("Puntuacion insertada correctamente");
+        }else{
+            alert("Error al insertar puntuacion");
+        }
+    });
+}
+
+function getPuntuacion(id){
+    let datos ={
+        id: id,
+        usuario: usuarioToken()
+    }
+    return fetch("http://localhost/alexcines/api/puntuacion/getPuntuacion",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
+    .then(response => {
+        if(!response.ok){
+            console.error("Error al conseguir puntuacion");
+        }else{
+            return response.json();
+        }
+    });
+}
+
+function getPuntuacionMedia(id){
+    let datos ={
+        id: id
+    }
+    return fetch("http://localhost/alexcines/api/puntuacion/getPuntuacionMedia",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
+    .then(response => {
+        if(!response.ok){
+            console.error("Error al conseguir puntuacion media");
+        }else{
+            return response.json();
+        }
+    });
+}
+
+function deletePuntuacion(id){
+    let datos ={
+        id: id,
+        usuario: usuarioToken()
+    }
+    return fetch("http://localhost/alexcines/api/puntuacion/deletePuntuacion",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
+    .then(response => {
+        if(!response.ok){
+            console.error("Error al eliminar puntuacion");
+        }else{
+            return response.json();
+        }
+    }).then(respuesta =>{
+        if(respuesta===1){
+            alert("Puntuacion eliminada correctamente");
+        }else{
+            alert("Error al eliminar puntuacion");
         }
     });
 }

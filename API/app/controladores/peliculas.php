@@ -59,4 +59,26 @@ class peliculas extends Controlador{
             echo 0;
         }
     }
+
+    public function updatePelicula(){
+        try{
+            $jsonDatos =file_get_contents("php://input");
+            $json=json_decode($jsonDatos,true);
+            $id = $json["id"];
+            $original= $json["original"];
+            $castellano= $json["castellano"];
+            $anno= $json["anno"];
+            $duracion= $json["duracion"];
+            $director= $json["director"];
+            $reparto= $json["reparto"];
+            $sinopsis= $json["sinopsis"];
+            $portada= $json["portada"];
+            $generos= $json["generos"];
+            
+            $this->peliculasmodelo->updatePelicula($id,$original,$castellano,$anno,$duracion,$director,$reparto,$sinopsis,$portada,$generos);
+            echo 1;
+        }catch(Exception $e){
+            echo 0;
+        }
+    }
 }

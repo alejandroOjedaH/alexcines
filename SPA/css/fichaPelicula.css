@@ -9,12 +9,13 @@
 }
 
 #datosContainerFicha{
+    font-size: 20px;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: flex-start;
     flex-wrap: wrap;
-    align-items: center;
-    width: 70%;
+    align-items: flex-start;
+    width: 35%;
 }
 
 #datosContainerFicha span{
@@ -22,9 +23,38 @@
     text-align: start;
 }
 
+#datosContainerFicha input{
+    width: 100%;
+}
+
+#puntuacionContainerFicha{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 #imagenesDatosFicha{
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-around;
+}
+
+.mostrarUsuarioFichaPelicula{
+    margin-bottom: 10px;
+}
+
+@media only screen and (max-width: 600px) {
+    #datosContainerFicha input{
+        width: 90%;
+    }
+    #puntuacionContainerFicha input{
+        width: 90%;
+    }
+    #datosContainerFicha{
+        width: 90%;
+    }
+    #imagenPortada{
+        width: 90%;
+    }
 }

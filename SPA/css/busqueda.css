@@ -34,14 +34,6 @@
     align-items: flex-start;
 }
 
-.camposDatosUsuario{
-    width: 25%;
-}
-
-.camposDatosPelicula{
-    width: 14%;
-}
-
 
 .camposDatosUsuario img{
     width: 100px;
@@ -49,4 +41,17 @@
 
 .camposDatosPelicula img{
     width: 100px;
+}
+
+@media only screen and (max-width: 600px) {
+    .camposDatosUsuario{
+        width: 100%;
+    }
+    .camposDatosPelicula{
+        width: 100%;
+    }
+
+    .contenedorCabDatos{
+        display: none;
+    }
 }

@@ -24,4 +24,10 @@ class peliculasmodelo{
         $this->bd->query($sql);
         return $this->bd->execute();
     }
+
+    public function updatePelicula($id,$original,$castellano,$anno,$duracion,$director,$reparto,$sinopsis,$portada,$generos){
+        $sql = "update peliculas  set titulooriginal='$original', titulocastellano='$castellano', anno=$anno, duracion=$duracion, director='$director', reparto='$reparto', sinopsis='$sinopsis',portada='$portada', generos='$generos'  where id =$id;";
+        $this->bd->query($sql);
+        return $this->bd->execute();
+    }
 }
