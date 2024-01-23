@@ -1485,39 +1485,41 @@ function mostrarTarjetaPortadaFicha(portada){
 }
 
 function mostrarPaginaPrincipal(){
-    let main=document.createElement("div");
-    let masValoradaTitulo= document.createElement("h1");
-    let imageSlider=document.createElement("div");
-
-    main.id="principal";
-    imageSlider.classList.add("slideshow-container");
-
-    masValoradaTitulo.innerText="Mejor valoradas";
-
     masValorada().then(peliculas=>{
-        peliculas.forEach(pelicula => {
-            let sliderContentContenedor= document.createElement("div");
-            let portadaSlider= document.createElement("img");
-            let textoSlider= document.createElement("div");
+        let main=document.createElement("div");
+        let masValoradaTitulo= document.createElement("h1");
+        let imageSlider=document.createElement("div");
 
-            sliderContentContenedor.classList.add("mySlides");
-            sliderContentContenedor.classList.add("fade");
-            portadaSlider.classList.add("imageSlider");
-            textoSlider.classList.add("text");
-            
-            portadaSlider.src=pelicula.portada;
-            textoSlider.innerText=pelicula.titulocastellano;
+        main.id="principal";
+        imageSlider.classList.add("slideshow-container");
 
-            sliderContentContenedor.appendChild(portadaSlider);
-            sliderContentContenedor.appendChild(textoSlider);
-            imageSlider.appendChild(sliderContentContenedor);
-        });
+        masValoradaTitulo.innerText="Mejor valoradas";
+
+        
+            peliculas.forEach(pelicula => {
+                let sliderContentContenedor= document.createElement("div");
+                let portadaSlider= document.createElement("img");
+                let textoSlider= document.createElement("div");
+
+                sliderContentContenedor.classList.add("mySlides");
+                sliderContentContenedor.classList.add("fade");
+                portadaSlider.classList.add("imageSlider");
+                textoSlider.classList.add("text");
+                
+                portadaSlider.src=pelicula.portada;
+                textoSlider.innerText=pelicula.titulocastellano;
+
+                sliderContentContenedor.appendChild(portadaSlider);
+                sliderContentContenedor.appendChild(textoSlider);
+                imageSlider.appendChild(sliderContentContenedor);
+            });
+
+        main.appendChild(masValoradaTitulo);
+        main.appendChild(imageSlider);
+        cuerpo.appendChild(main);
+        mostrarPie();
+        showSlides(slideIndex);
     });
-
-    main.appendChild(masValoradaTitulo);
-    main.appendChild(imageSlider);
-    cuerpo.appendChild(main);
-    mostrarPie();
 }
 
 //Otras funciones
