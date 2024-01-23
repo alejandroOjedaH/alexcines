@@ -81,4 +81,13 @@ class peliculas extends Controlador{
             echo 0;
         }
     }
+
+    public function masValorada(){
+        try{          
+            $datos = $this->peliculasmodelo->masValorada();
+            echo json_encode($datos);
+        }catch(Exception $e){
+            echo 0;
+        }
+    }
 }
