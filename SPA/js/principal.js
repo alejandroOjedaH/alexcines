@@ -828,7 +828,7 @@ function mostrarBusqueda(tipo,datos){
 
             nombre.innerText=dato.nombre;
             mail.innerText=dato.mail;
-            if(dato.isAdmin=== 1){
+            if(dato.isAdmin*1 === 1){
                 admin.innerText="Es admin";
             }else{
                 admin.innerText="No es admin";
