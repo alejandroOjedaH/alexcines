@@ -44,6 +44,70 @@
     margin-bottom: 10px;
 }
 
+#comentariosContainer{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    width: 100%;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #FFFFFF;
+    justify-content: center;
+    font-size: 20px;
+    text-align: center;
+}
+
+#comentarioUsuarioContainer{
+    display: flex;
+    flex-direction: raw;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+#comentarioUsuarioContainer input{
+    width: 80%;
+    height: 50px;
+}
+
+#comentariosUsuariosContainer{
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column-reverse;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.comentarioIndividualContainer{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    width: 90%;
+    background-color: #F5F5F5;
+    justify-content: center;
+    font-size: 20px;
+    height: fit-content;
+    margin-bottom: 20px;
+    padding-bottom: 50px;
+}
+
+.comentarioIndividualContainer input,.comentarioIndividualContainer span{
+    width: 75%;
+    height: 50px;
+}
+
+.containerVertical{
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+}
+
+.containerVertical img{
+    width: 100px;
+}
+
 @media only screen and (max-width: 600px) {
     #datosContainerFicha input{
         width: 90%;

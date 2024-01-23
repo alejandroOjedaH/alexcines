@@ -1018,6 +1018,8 @@ function mostrarTarjetaFotoUsuario(imagenPerfil){
 
 function mostrarFichaPelicula(datos){
     let imagenDatosContainer=null;
+    let main=null;
+    //puntuacion
     let puntuacionContainer = document.createElement("div");
     let valorarCab =document.createElement("span");
     let puntuacionSlider = document.createElement("input");
@@ -1081,10 +1083,163 @@ function mostrarFichaPelicula(datos){
                 }
             });
         });
+    };
+    //comentarios
+    let comentariosContainer = document.createElement("div");
+    let comentariosTitulo = document.createElement("h1");
+    let comentariosUsuariosContainer = document.createElement("div");
+    let comentarioUsuarioContainer = document.createElement("div");
+    let comentarioUsuarioInput = document.createElement("input");
+    let comentarioUsuarioEnviar= document.createElement("span");
+    
+    comentariosContainer.id="comentariosContainer";
+    comentarioUsuarioContainer.id="comentarioUsuarioContainer";
+    comentarioUsuarioEnviar.classList.add("verde");
+    comentarioUsuarioEnviar.classList.add("elemento");
+    comentariosTitulo.innerText="Comentarios";
+    comentarioUsuarioEnviar.innerText="Añadir comentario";
+    comentarioUsuarioInput.type="textarea";
+    comentariosUsuariosContainer.id="comentariosUsuariosContainer";
+
+    comentarioUsuarioEnviar.onclick=()=>{
+        insertarComentario(datos.id, comentarioUsuarioInput.value).then(()=>{
+            mostrarComentarios();
+        });
+        
     }
 
+    mostrarComentarios();
+    function mostrarComentarios(){
+        comentariosUsuariosContainer.innerHTML="";
+        //si es admin comentarios
+        if(getCookie("esAdmin")==="true"){
+            getComentarios(datos.id).then(comentarios=>{
+                comentarios.forEach(comentario => {
+                    let comentarioIndividualContainer =document.createElement("div");
+                    let comentarioUsuarioPerfilContainer =document.createElement("div");
+                    let comentarioBotonesContainer =document.createElement("div");
+                    let mostrarComentarioNombre=document.createElement("span");
+                    let mostrarComentarioContenido=document.createElement("input");
+                    let mostrarComentarioFoto=document.createElement("img");
+                    let mostrarComentarioEditar=document.createElement("span");
+                    let mostrarComentarioEliminar=document.createElement("span");
+
+                    mostrarComentarioEditar.classList.add("containerVertical");
+                    mostrarComentarioEditar.innerText="Editar";
+                    mostrarComentarioEliminar.innerText="Eliminar";
+                    mostrarComentarioEditar.classList.add("amarillo");
+                    mostrarComentarioEliminar.classList.add("rojo");
+                    mostrarComentarioEditar.classList.add("elemento");
+                    mostrarComentarioEliminar.classList.add("elemento");
+                    mostrarComentarioNombre.innerText=comentario.nombre;
+                    mostrarComentarioContenido.value=comentario.comentario;
+                    comentarioIndividualContainer.classList.add("comentarioIndividualContainer");
+                    comentarioUsuarioPerfilContainer.classList.add("containerVertical");
+
+                    if(comentario.fotoPerfil === null){
+                        mostrarComentarioFoto.src="./img/defaultuser.png";
+                    }else{
+                        mostrarComentarioFoto.src=comentario.fotoPerfil;
+                    }
+
+                    mostrarComentarioEditar.onclick=()=>{
+                        updateComentario(comentario.id,mostrarComentarioContenido.value);
+                    }
+
+                    mostrarComentarioEliminar.onclick= ()=>{
+                        deleteComentario(comentario.id);
+                        comentarioIndividualContainer.remove();
+                    };
+                    
+                    comentarioUsuarioPerfilContainer.appendChild(mostrarComentarioNombre);
+                    comentarioUsuarioPerfilContainer.appendChild(mostrarComentarioFoto);
+                    comentarioBotonesContainer.appendChild(mostrarComentarioEditar);
+                    comentarioBotonesContainer.appendChild(mostrarComentarioEliminar);
+                    comentarioIndividualContainer.appendChild(comentarioUsuarioPerfilContainer);
+                    comentarioIndividualContainer.appendChild(mostrarComentarioContenido);
+                    comentarioIndividualContainer.appendChild(comentarioBotonesContainer);
+                    comentariosUsuariosContainer.appendChild(comentarioIndividualContainer);
+                });
+            });
+        }else{
+            getComentarios(datos.id).then(comentarios=>{
+                comentarios.forEach(comentario => {
+                    if(comentario.nombre === usuarioToken()){
+                        let comentarioIndividualContainer =document.createElement("div");
+                        let comentarioUsuarioPerfilContainer =document.createElement("div");
+                        let comentarioBotonesContainer =document.createElement("div");
+                        let mostrarComentarioNombre=document.createElement("span");
+                        let mostrarComentarioContenido=document.createElement("input");
+                        let mostrarComentarioFoto=document.createElement("img");
+                        let mostrarComentarioEditar=document.createElement("span");
+                        let mostrarComentarioEliminar=document.createElement("span");
+
+                        mostrarComentarioEditar.classList.add("containerVertical");
+                        mostrarComentarioEditar.innerText="Editar";
+                        mostrarComentarioEliminar.innerText="Eliminar";
+                        mostrarComentarioEditar.classList.add("amarillo");
+                        mostrarComentarioEliminar.classList.add("rojo");
+                        mostrarComentarioEditar.classList.add("elemento");
+                        mostrarComentarioEliminar.classList.add("elemento");
+                        mostrarComentarioNombre.innerText=comentario.nombre;
+                        mostrarComentarioContenido.value=comentario.comentario;
+                        comentarioIndividualContainer.classList.add("comentarioIndividualContainer");
+                        comentarioUsuarioPerfilContainer.classList.add("containerVertical");
+
+                        if(comentario.fotoPerfil === null){
+                            mostrarComentarioFoto.src="./img/defaultuser.png";
+                        }else{
+                            mostrarComentarioFoto.src=comentario.fotoPerfil;
+                        }
+
+                        mostrarComentarioEditar.onclick=()=>{
+                            updateComentario(comentario.id,mostrarComentarioContenido.value);
+                        }
+
+                        mostrarComentarioEliminar.onclick= ()=>{
+                            deleteComentario(comentario.id);
+                            comentarioIndividualContainer.remove();
+                        };
+                        
+                        comentarioUsuarioPerfilContainer.appendChild(mostrarComentarioNombre);
+                        comentarioUsuarioPerfilContainer.appendChild(mostrarComentarioFoto);
+                        comentarioBotonesContainer.appendChild(mostrarComentarioEditar);
+                        comentarioBotonesContainer.appendChild(mostrarComentarioEliminar);
+                        comentarioIndividualContainer.appendChild(comentarioUsuarioPerfilContainer);
+                        comentarioIndividualContainer.appendChild(mostrarComentarioContenido);
+                        comentarioIndividualContainer.appendChild(comentarioBotonesContainer);
+                        comentariosUsuariosContainer.appendChild(comentarioIndividualContainer);
+                    }else{
+                        let comentarioIndividualContainer =document.createElement("div");
+                        let comentarioUsuarioPerfilContainer =document.createElement("div");
+                        let mostrarComentarioNombre=document.createElement("span");
+                        let mostrarComentarioContenido=document.createElement("span");
+                        let mostrarComentarioFoto=document.createElement("img");
+    
+                        mostrarComentarioNombre.innerText=comentario.nombre;
+                        mostrarComentarioContenido.innerText=comentario.comentario;
+                        comentarioIndividualContainer.classList.add("comentarioIndividualContainer");
+                        comentarioUsuarioPerfilContainer.classList.add("containerVertical");
+
+                        if(comentario.fotoPerfil === null){
+                            mostrarComentarioFoto.src="./img/defaultuser.png";
+                        }else{
+                            mostrarComentarioFoto.src=comentario.fotoPerfil;
+                        }
+                        
+                        comentarioUsuarioPerfilContainer.appendChild(mostrarComentarioNombre);
+                        comentarioUsuarioPerfilContainer.appendChild(mostrarComentarioFoto);
+                        comentarioIndividualContainer.appendChild(comentarioUsuarioPerfilContainer);
+                        comentarioIndividualContainer.appendChild(mostrarComentarioContenido);
+                        comentariosUsuariosContainer.appendChild(comentarioIndividualContainer);
+                    }
+                });
+            });
+        }
+    }
+    //si es admin
     if(getCookie("esAdmin")==="true"){
-        let main = document.createElement("div");
+        main = document.createElement("div");
         let fotoContainer = document.createElement("div");
         let datosContainer = document.createElement("div");
         let botonesContainer = document.createElement("div");
@@ -1182,7 +1337,8 @@ function mostrarFichaPelicula(datos){
         main.appendChild(imagenDatosContainer);
         cuerpo.appendChild(main);
     }else{
-        let main = document.createElement("div");
+        //si no es admin
+        main = document.createElement("div");
         let fotoContainer = document.createElement("div");
         let datosContainer = document.createElement("div");
         imagenDatosContainer = document.createElement("div");
@@ -1244,6 +1400,7 @@ function mostrarFichaPelicula(datos){
         cuerpo.appendChild(main); 
     }
 
+    //agregar a la pagina
     puntuacionContainer.appendChild(valorarCab);
     puntuacionContainer.appendChild(puntuacionSlider);
     puntuacionContainer.appendChild(puntuacionUsuario);
@@ -1251,6 +1408,12 @@ function mostrarFichaPelicula(datos){
     puntuacionContainer.appendChild(puntuacionMediaCab);
     puntuacionContainer.appendChild(puntuacionMedia);
     imagenDatosContainer.appendChild(puntuacionContainer);
+    comentarioUsuarioContainer.appendChild(comentarioUsuarioInput);
+    comentarioUsuarioContainer.appendChild(comentarioUsuarioEnviar);
+    comentariosContainer.appendChild(comentariosTitulo);
+    comentariosContainer.appendChild(comentarioUsuarioContainer);
+    comentariosContainer.appendChild(comentariosUsuariosContainer);
+    main.appendChild(comentariosContainer);
 
     mostrarPie();
 }
@@ -1670,6 +1833,83 @@ function deletePuntuacion(id){
             alert("Puntuacion eliminada correctamente");
         }else{
             alert("Error al eliminar puntuacion");
+        }
+    });
+}
+
+function insertarComentario(id,comentario){
+    let datos ={
+        id: id,
+        usuario: usuarioToken(),
+        comentario: comentario
+    }
+    return fetch("http://localhost/alexcines/api/comentario/insertComentario",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
+    .then(response => {
+        if(!response.ok){
+            console.error("Error al insertar comentario");
+        }else{
+            return response.json();
+        }
+    }).then(respuesta =>{
+        if(respuesta===1){
+            alert("Comentario insertada correctamente");
+        }else{
+            alert("Error al insertar comentario");
+        }
+    });
+}
+
+function getComentarios(id){
+    let datos ={
+        id: id
+    }
+    return fetch("http://localhost/alexcines/api/comentario/getComentarios",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
+    .then(response => {
+        if(!response.ok){
+            console.error("Error al conseguir comentarios");
+        }else{
+            return response.json();
+        }
+    });
+}
+
+function deleteComentario(id){
+    let datos ={
+        id: id
+    }
+    return fetch("http://localhost/alexcines/api/comentario/deleteComentario",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
+    .then(response => {
+        if(!response.ok){
+            console.error("Error al eliminar comentario");
+        }else{
+            return response.json();
+        }
+    }).then(respuesta =>{
+        if(respuesta===1){
+            alert("Comentario eliminado correctamente");
+        }else{
+            alert("Error al eliminar comentario");
+        }
+    });
+}
+
+function updateComentario(id,comentario){
+    let datos ={
+        id: id,
+        comentario: comentario
+    }
+    return fetch("http://localhost/alexcines/api/comentario/updateComentario",{method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(datos)})
+    .then(response => {
+        if(!response.ok){
+            console.error("Error al modificar comentario");
+        }else{
+            return response.json();
+        }
+    }).then(respuesta =>{
+        if(respuesta===1){
+            alert("Comentario modificado correctamente");
+        }else{
+            alert("Error al modificar comentario");
         }
     });
 }
