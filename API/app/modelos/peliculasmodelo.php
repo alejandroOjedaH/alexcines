@@ -32,7 +32,7 @@ class peliculasmodelo{
     }
 
     public function masValorada(){
-        $sql = "select peli.id, COALESCE(comen.contada,0)+COALESCE(puntu.contada,0) as valorada, peli.portada, peli.titulocastellano
+        $sql = "select peli.*, COALESCE(comen.contada,0)+COALESCE(puntu.contada,0) as valorada, peli.portada, peli.titulocastellano
         from peliculas peli 
         left join (select c.id_pelicula,count(c.comentario) contada from comentarios c group by c.id_pelicula) as comen on comen.id_pelicula = peli.id
         left join (select p.id_pelicula, count(p.id_pelicula) contada from puntuacion p group by p.id_pelicula) as puntu on puntu.id_pelicula = peli.id

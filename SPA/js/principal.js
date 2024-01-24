@@ -1489,36 +1489,51 @@ function mostrarPaginaPrincipal(){
         let main=document.createElement("div");
         let masValoradaTitulo= document.createElement("h1");
         let imageSlider=document.createElement("div");
+        let anteriorBoton=document.createElement("a");
+        let siguienteBoton=document.createElement("a");
 
         main.id="principal";
         imageSlider.classList.add("slideshow-container");
+        anteriorBoton.classList.add("prev");
+        siguienteBoton.classList.add("next");
 
-        masValoradaTitulo.innerText="Mejor valoradas";
+        anteriorBoton.innerText="<";
+        siguienteBoton.innerText=">";
 
+        masValoradaTitulo.innerText="Mas valoradas";
+
+        anteriorBoton.onclick=()=>{plusSlides(-1)};
+        siguienteBoton.onclick=()=>{plusSlides(1)};
         
-            peliculas.forEach(pelicula => {
-                let sliderContentContenedor= document.createElement("div");
-                let portadaSlider= document.createElement("img");
-                let textoSlider= document.createElement("div");
+        peliculas.forEach(pelicula => {
+            let sliderContentContenedor= document.createElement("div");
+            let portadaSlider= document.createElement("img");
+            let textoSlider= document.createElement("div");
 
-                sliderContentContenedor.classList.add("mySlides");
-                sliderContentContenedor.classList.add("fade");
-                portadaSlider.classList.add("imageSlider");
-                textoSlider.classList.add("text");
+            sliderContentContenedor.classList.add("mySlides");
+            sliderContentContenedor.classList.add("fade");
+            portadaSlider.classList.add("imageSlider");
+            textoSlider.classList.add("text");
                 
-                portadaSlider.src=pelicula.portada;
-                textoSlider.innerText=pelicula.titulocastellano;
+            portadaSlider.src=pelicula.portada;
+            textoSlider.innerText=pelicula.titulocastellano;
 
-                sliderContentContenedor.appendChild(portadaSlider);
-                sliderContentContenedor.appendChild(textoSlider);
-                imageSlider.appendChild(sliderContentContenedor);
-            });
+            portadaSlider.onclick=()=>{
+                cargarFichaPelicula(pelicula);
+            }
 
+            sliderContentContenedor.appendChild(portadaSlider);
+            sliderContentContenedor.appendChild(textoSlider);
+            imageSlider.appendChild(sliderContentContenedor);
+        });
+
+        imageSlider.appendChild(anteriorBoton);
+        imageSlider.appendChild(siguienteBoton);
         main.appendChild(masValoradaTitulo);
         main.appendChild(imageSlider);
         cuerpo.appendChild(main);
         mostrarPie();
-        showSlides(slideIndex);
+        showSlides();
     });
 }
 

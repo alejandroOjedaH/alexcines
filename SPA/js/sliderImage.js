@@ -1,8 +1,8 @@
-let slideIndex = 1;
+let slideIndex = 0;
 
 // Next/previous controls
 function plusSlides(n) {
-    showSlides(slideIndex += n);
+    mostrarSlides(slideIndex += n);
 }
 
 // Thumbnail image controls
@@ -10,7 +10,7 @@ function currentSlide(n) {
     showSlides(slideIndex = n);
 }
 
-function showSlides(n) {
+function mostrarSlides(n) {
     let i;
     let slides = document.getElementsByClassName("mySlides");
     let dots = document.getElementsByClassName("dot");
