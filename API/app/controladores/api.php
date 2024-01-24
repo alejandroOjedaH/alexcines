@@ -34,7 +34,7 @@ class api extends Controlador{
                     );
 
                     $token =JWT::encode($payload, $secret,'HS256');
-
+                    $this->apimodelo->setToken($json["usuario"],$token);
                     echo json_encode("Bearer:".$token."");
                 }catch(Exception $e){
                     echo "Error al generar el token";
@@ -166,12 +166,12 @@ class api extends Controlador{
             
             if($claveNueva == $nuevaClave && $this->apimodelo->validarlogin($usuario,$claveActual)){
                 $this->apimodelo->cambiarClave($usuario,$claveNueva);
-                echo true;
+                echo 1;
             }else{
-                echo "Campos erroneos";
+                echo 0;
             }
         }catch(Exception $e){
-            echo json_encode($e);
+            echo 0;
         }
     }
 
@@ -185,6 +185,51 @@ class api extends Controlador{
             echo json_encode($datos);
         }catch(Exception $e){
             echo json_encode($e);
+        }
+    }
+
+    public function buscarPorNombre(){
+        try{
+            $jsonDatos =file_get_contents("php://input");
+            $json=json_decode($jsonDatos,true);
+            $tipo = $json["tipo"];
+            $contenido = $json["contenido"];
+            
+            $datos = $this->apimodelo->buscarPorNombre($tipo,$contenido);
+            echo json_encode($datos);
+        }catch(Exception $e){
+            echo 0;
+        }
+    }
+
+    public function deleteUser(){
+        try{
+            $jsonDatos =file_get_contents("php://input");
+            $json=json_decode($jsonDatos,true);
+            $id = $json["id"];
+            
+            $this->apimodelo->deleteUser(intval($id));
+            echo 1;
+        }catch(Exception $e){
+            echo 0;
+        }
+    }
+
+    public function updateUser(){
+        try{
+            $jsonDatos =file_get_contents("php://input");
+            $json=json_decode($jsonDatos,true);
+            $id = $json["id"];
+            $mail =$json["mail"];
+            $nombre = $json["nombre"];
+            $admin = $json["admin"];
+            $clave = $json["clave"];
+            $imagen = $json["imagen"];
+            
+            $this->apimodelo->updateUser(intval($id),$mail,$nombre,intval($admin),$clave,$imagen);
+            echo 1;
+        }catch(Exception $e){
+            echo 0;
         }
     }
 }
